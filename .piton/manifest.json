@@ -1,0 +1,21 @@
+{
+  "generated": [
+    ".agents/skills/crux-arch-dependencies/SKILL.md",
+    ".agents/skills/crux-arch-explore/SKILL.md",
+    ".agents/skills/crux-arch-interfaces/SKILL.md",
+    ".agents/skills/crux-arch-risks/SKILL.md",
+    ".agents/skills/crux-arch-tradeoffs/SKILL.md",
+    ".agents/skills/crux-impl-reconcile/SKILL.md",
+    ".agents/skills/crux-project-bootstrap/SKILL.md",
+    ".agents/skills/crux-spec-coverage/SKILL.md",
+    ".agents/skills/crux-spec-deep-dive/SKILL.md",
+    ".agents/skills/crux-spec-develop/SKILL.md",
+    ".agents/skills/crux-spec-impact/SKILL.md",
+    ".agents/skills/crux-spec-refactor/SKILL.md",
+    ".agents/skills/crux-spec-review/SKILL.md",
+    ".codex/reference/Factory.md"
+  ],
+  "targets": {
+    "codex": "2026-09-21"
+  }
+}

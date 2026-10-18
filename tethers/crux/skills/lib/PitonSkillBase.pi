@@ -1,0 +1,44 @@
+from @piton/belay import Skill
+
+// Base for every crux skill. It is abstract, so it never
+// compiles or is emitted on its own. Concrete skills declare with the
+// skill keyword and extend this anchor, giving their own description,
+// useWhen and prompt. Shared guidance lives in named properties rather
+// than prompt: the skill keyword puts Skill last in the chain, so its
+// inherited null prompt default would override a prompt set here,
+// while named properties inherit cleanly and are serialized as
+// sections after each concrete skill's own prompt.
+export abstract anchor PitonSkillBase extends Skill as skill:
+    workingWithPiton:
+        Start by finding the project. Open piton.config.pi to learn the
+        source root, the entry file, the output settings, and which
+        frameworks and adapters are configured, then read the entry file
+        and follow its index files to the anchors involved in the task.
+        Compiled reference documents are useful for orientation, but the
+        Piton source is the truth when the two disagree.
+
+        Treat the .pi files as the only source of truth. Never hand-edit
+        generated output, including generated guidance files, generated
+        skill, command and agent files, renderer output, and anything
+        tracked in .piton/manifest.json. Make every lasting change in
+        the .pi source and rebuild so the generated files follow.
+
+        Follow references lazily. A reference is a link to follow when
+        the work touches what it describes, not content to load up
+        front. Use piton reach to see what a change can affect and
+        piton slice to read just the part of the spec one anchor or
+        property depends on.
+
+        Work in a verified loop. Make the smallest change that covers
+        the task, then run piton format and piton check, fix anything
+        they report in the source, run piton build, and inspect the
+        diff of the generated files before reporting the result. Say
+        plainly what the compiler reported rather than claiming success
+        it did not confirm.
+
+    groundRules:
+        - Read Piton fluency once per context. Do not re-read it for each skill or task in the same context.
+        - Read the relevant source and compiled reference before changing anything.
+        - Keep changes in the Piton source, scoped to what the task asks for.
+        - Prefer the conventions already used by neighbouring files over new ones.
+        - Report compiler errors and warnings exactly as they are, with their files.

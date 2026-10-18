@@ -1,0 +1,171 @@
+use @piton/belay
+
+from ./lib/PitonSkillBase import PitonSkillBase
+
+export skill CruxProjectBootstrap extends PitonSkillBase:
+    description:
+        Guides a user from a vague project idea to an initial, structured
+        Piton specification through a short, adaptive interview.
+    useWhen:
+        the user wants to start a new project or specification from an
+        idea, however vague, and no adequate specification exists yet
+    prompt:
+        Fluency is read once per context. If you have already run
+        piton agent --print-fluency and read its complete output
+        earlier in this same context, do not run it again and work
+        from that reading. Otherwise, before any Piton work, run it in
+        the project and read the complete output. Treat it as the
+        authoritative reference for Piton syntax, project structure,
+        imports and exports, inheritance and composition, commands, and
+        validation. Do not invent Piton syntax or conventions. If that
+        command fails, explain the problem to the user instead of
+        guessing how Piton works.
+
+        Your goal is a useful initial specification, not an exhaustive
+        specification of an entire system. A user may start with a
+        single sentence such as wanting to build a CAD kernel, and
+        after a small number of carefully chosen questions should have
+        a coherent initial Piton specification capturing the purpose,
+        scope, major capabilities, and important constraints of the
+        project. The user can then accept it or keep refining it in
+        further interview rounds.
+
+        When invoked, first ask how many questions the user would like
+        to answer to develop the initial specification, recommending 5
+        as the default. The user may accept the default by pressing
+        Enter or answering naturally, or choose any other number. This
+        question-count choice does not count as an interview question.
+        If the user has already described the project, use that
+        description and never ask them to repeat it. If they have not,
+        the first interview question establishes what they want to
+        build.
+
+    askingQuestions:
+        Always ask exactly one interview question per turn. Never
+        present a questionnaire, batch several questions, or disguise
+        several subquestions as one. Wait for the answer before
+        continuing. Show concise progress where helpful, such as
+        Question 3 of 5. A question counts as answered when the user
+        gives a substantive response or explicitly skips it.
+        Clarifications, examples, and recommendations about the same
+        question do not increment the count.
+
+        Keep track throughout of the requested number of questions, the
+        number already answered, the current understanding of the
+        project, the important decisions established, the questions not
+        yet answered, and any uncertainties or assumptions.
+
+        Do not follow a hardcoded sequence. Choose each next question
+        from everything learned so far, weighing how much the answer
+        could change the specification, how much important information
+        is missing, how many later decisions depend on it, how damaging
+        a wrong assumption would be, and whether it belongs in an
+        initial specification at all. Prefer foundational questions
+        over implementation details. For a geometry kernel, whether it
+        targets mechanical CAD or artistic modeling matters more at
+        this stage than a particular memory allocator. Areas worth
+        exploring, when relevant to this project, include the identity
+        and intended users of the project, the problem it solves, its
+        core capabilities and what distinguishes it, what is inside and
+        explicitly outside its scope, its important dependencies and
+        integrations, its non-negotiable constraints and tradeoffs, and
+        what would make an initial version successful. These are areas
+        of investigation, not required questions or stages, and a short
+        interview will not cover all of them. That is acceptable.
+
+        Make each question clear, concise, and accessible. Offer
+        suggested options when they help, but never limit the user to
+        those options. Never spend the budget on information already
+        provided. Respect the chosen budget exactly. Do not silently
+        extend the interview, compress independent questions into one,
+        or chase exhaustive discovery. When the final question is
+        answered, stop interviewing and generate the specification
+        without asking further discovery questions.
+
+    generatingTheSpecification:
+        Synthesize everything learned into an initial Piton
+        specification, capturing as much of the following as the
+        conversation justifies. Include the identity and purpose of the
+        project, its intended users or consumers, its primary
+        capabilities, its scope and boundaries, its confirmed
+        constraints and priorities, its initial success criteria, and
+        its significant unresolved decisions. Only include information
+        supported by the answers given or by existing project context.
+
+        Never invent requirements. Distinguish confirmed decisions from
+        suggestions. Do not overengineer, do not design the
+        implementation in detail, and do not fabricate completeness.
+        Preserve major unanswered questions as open questions instead
+        of assuming answers. Produce specifications only, never
+        implementation code.
+
+        Use the fluency guidance to choose the project structure. In an
+        existing Piton project, inspect the existing specifications
+        first, preserve established content, and incorporate new
+        information without silently overriding existing decisions. In
+        a new or empty project, create the minimal appropriate Piton
+        project structure, write the initial specification in actual
+        Piton syntax, and avoid unnecessary files and speculative
+        modules. Prefer a small, coherent specification over a large
+        collection of poorly defined components. Validate the result
+        with the Piton toolchain, and fix anything validation reports
+        before presenting the specification as complete.
+
+    presentingAndContinuing:
+        When the initial specification is generated, briefly summarize
+        what was established, identify the most significant remaining
+        unknowns, explain where the specification was written, and then
+        ask exactly this. Is this good enough for now, or would you
+        like to keep going? Offer the two clear options, Good enough
+        and Keep going. Do not move on to implementation planning or
+        any other workflow
+        automatically.
+
+        If the user chooses to keep going, ask how many additional
+        questions they want, defaulting to 5, and reset the question
+        counter for the new round while preserving all existing
+        knowledge and decisions. Read the existing specification,
+        identify its important gaps, avoid repeating questions already
+        answered, and prioritize the highest-value unresolved areas,
+        still asking one question at a time and respecting the new
+        budget. Afterwards update the same specification rather than
+        generating a competing one, validate it, summarize the changes,
+        and offer the same two options again. This cycle may repeat as
+        often as the user wishes.
+
+        If during any round the user revises an earlier decision, find
+        the requirements it affects, update the specification to match
+        the newest explicit decision, remove or revise contradictory
+        statements, preserve unrelated requirements, and note
+        significant consequences that may need clarification later.
+        Never silently keep obsolete requirements.
+
+    interactionRules:
+        Support natural conversation throughout. The user may answer
+        normally, ask for examples, request a recommendation, say they
+        do not know, skip a question, correct an earlier answer, offer
+        information beyond the question asked, ask for fewer or more
+        questions, or stop the interview early. Answering a
+        clarification or example request does not consume a question.
+        An answer the user does not know stays unresolved rather than
+        becoming an assumption. If the user stops early, offer to
+        generate the best specification possible from what has already
+        been collected. Never pressure the user to answer questions
+        they cannot meaningfully answer.
+
+    resumeState:
+        Persist enough structured state, in the project and following
+        Piton conventions, for an interrupted interview to be resumed.
+        Record the current question budget and progress, the confirmed
+        information and decisions, the outstanding questions, the
+        current interview focus, and whether a specification has been
+        generated, without storing unnecessary conversation transcripts.
+        Keep this state in the draft specification itself where that
+        fits, for example as open questions and round progress recorded
+        alongside the specification being built, and remove or finalize
+        it when the user accepts the specification. When resuming,
+        inspect the existing project and this state before asking
+        anything. Do not start from scratch or repeat established
+        questions, and distinguish an unfinished round from a completed
+        round that is only awaiting the decision between accepting the
+        specification and continuing.
