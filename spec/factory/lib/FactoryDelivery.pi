@@ -1,0 +1,51 @@
+export abstract anchor FactoryDelivery:
+    unmergedPrerequisites:
+        Dependent work may start from a finished prerequisite branch before
+        integration once that prerequisite passes its required checks and
+        higher-level completion assessment. Track the exact prerequisite
+        version used by the dependent work. If the prerequisite changes or is
+        rejected, delegate reconciliation before treating the dependent result
+        as complete. Merging alone need not block useful dependent work.
+    integrationChecks:
+        Integration includes checking that concurrent changes work together
+        before accepting their merge, even when each change passed separately.
+        Combine the changes and run the relevant project-defined checks on
+        that combined result. Ordinary code runs the checks; delegate conflicts
+        and failures requiring judgment to agents. This requirement does not
+        prescribe one universal test suite across projects.
+    completion:
+        Agents and their generated plans and instructions determine completion
+        criteria, testing, and reviews, ultimately driven by the prompt,
+        specification, or both. The factory does not independently impose
+        universal testing or review gates. Desired product outcomes belong to
+        individual orders rather than to a fixed category of factory output.
+    implementationCompletionHandoff:
+        Completion checking is part of the delegated workflow. When an
+        implementation agent reports done, a higher-level agent checks what
+        that claim means against the assigned work and its expected result.
+        Keep this assessment focused; the higher-level agent should not take
+        on substantial implementation or investigation itself. Delegate
+        further investigation or corrections as needed. This handoff does not
+        prescribe a universal test suite or full review pass for every step.
+    supportingRoles:
+        Different agents also handle merging, testing, and multiple levels of
+        review. Completion assessment and integration responsibilities follow
+        the defined handoff and integration requirements; other detailed
+        responsibilities remain open.
+    reviewApproach:
+        When a workflow includes review, use a fresh reviewer with a focused
+        brief containing the requirements, relevant changes, and checks to run.
+        The reviewer forms an initial assessment before consulting the
+        implementer's explanation, then may use that explanation to resolve
+        specific questions. Match review depth to the work's difficulty and
+        risk, reserving full blind review for difficult or high-risk work and
+        lighter review for routine changes. This does not impose a universal
+        review gate on every order.
+    deliveryDestination:
+        The order's prompt determines where completed work is delivered, such
+        as an integrated branch, a pull request, or the main branch. Asking for
+        a delivery default during onboarding is the preferred direction; the
+        exact default and fallback behavior remain unresolved.
+    workspaceIsolation:
+        Git worktrees are the preferred mechanism for isolating concurrent
+        implementation work. Allocation and integration policies remain open.

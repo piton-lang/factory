@@ -1,0 +1,72 @@
+export abstract anchor FactoryPlanning:
+    orderSubmission:
+        The engineer may discuss work with a chosen conversational agent or ask
+        it to break down a feature. When the engineer instructs it to begin, that
+        agent can submit an order summarizing its understanding to the factory.
+        The conversational agent need not be the agent used for factory planning.
+    conflictingOrders:
+        When a new order conflicts with active work, delegate assessment of the
+        conflict and present a concrete recommendation to the engineer,
+        including work that would be replaced or reused. A new order does not
+        silently cancel earlier intent. An explicit engineer instruction to
+        replace the old approach authorizes proceeding under the existing
+        supersession rules. Independent work may continue while clarification
+        is pending.
+    planningAndExecution:
+        A smart, expensive agent plans work at a broad level sufficient for a
+        mid-tier agent to elaborate. Mid-tier agents produce specific, detailed
+        implementation instructions for cheap, fast implementation agents.
+        This hierarchy guides delegation without prescribing a fixed pipeline.
+    evolvingWorkflow:
+        - An agent proposes the initial steps required to fulfill an order.
+        - Steps are deliberately flexible rather than a fixed sequence of stage types.
+        - Agents can revise steps as work progresses, within their authority.
+        - The factory dispatches execution of the resulting steps.
+        - A mid-tier agent proposes the initial workflow by default and can escalate difficult workflow decisions to a smarter agent.
+    revisionAuthority:
+        Agents can change work below their intelligence tier. Lower-tier agents
+        can add steps to request help when required. The receiving agent decides
+        whether to answer, escalate to a smarter agent, or disregard the request.
+        Disregarding a request means replying to the requesting lower-tier
+        agent that it does not need to ask for help with this issue and should
+        handle it itself.
+        Agents may propose changes to another agent's work at the same
+        intelligence tier, but a smarter agent decides those changes. An agent
+        may refine its own assigned work within its brief.
+    stepContext:
+        The delegating agent prepares a focused brief containing the step's
+        objective, relevant requirements, specific instructions, expected output,
+        and completion criteria. The brief links to the original order,
+        applicable Piton specifications, and relevant prior results. The receiving
+        agent starts with the brief and can consult broader context when needed
+        or request help. The factory preserves briefs and results so handoffs do
+        not depend on an agent remembering an earlier conversation.
+    dependenciesAndScheduling:
+        Agents explicitly declare and revise dependencies between steps. The
+        factory enforces those dependencies and determines readiness without
+        asking an agent to choose every next step. Independent steps may run
+        concurrently once their prerequisites are satisfied, subject to
+        configured concurrency limits and available account usage. The factory
+        checks for missing prerequisites and circular dependencies before
+        executing affected steps.
+        Dependency readiness makes a step eligible to run; available capacity
+        determines when it starts.
+    orderPriorities:
+        When orders compete for constrained capacity, favor completing the
+        highest-priority order sooner. Other orders may use capacity that the
+        higher-priority order cannot use. At equal priorities, favor finishing
+        work already underway to avoid accumulating half-finished results.
+        Exact priority representation remains a project implementation choice.
+    revisionsDuringExecution:
+        The design should make revisions affecting running steps rare. When an
+        authorized revision does affect running work, the factory marks that
+        work as superseded, requests cancellation, and preserves its outputs for
+        possible reuse. Replacement steps follow the revised plan. Superseded
+        results do not automatically count toward completion.
+    concurrentPlanRevisions:
+        Treat conflicting concurrent revisions to a plan as a merge conflict.
+        The factory dispatches another agent to resolve the conflict, subject
+        to the established revision authority. The resolution must preserve a
+        coherent plan and its dependencies. The exact conflict representation
+        and handling of affected steps while resolution is pending remain
+        unspecified.

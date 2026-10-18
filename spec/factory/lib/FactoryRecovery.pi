@@ -1,0 +1,25 @@
+export abstract anchor FactoryRecovery:
+    restartRecovery:
+        The factory must recover orders after a crash or restart. It preserves
+        plans, step status, briefs, results, and worktree references. Before
+        resuming, it checks interrupted steps so completed work is not blindly
+        repeated. If an agent is still working in its harness after a factory
+        restart, reconnect to that session and let it continue rather than
+        launching a replacement. Preserve the session references needed for
+        this recovery so surviving work is not duplicated.
+    failedAttempts:
+        The factory allows limited automatic retries for temporary execution
+        failures, such as timeouts. Retry limits are configurable. Problems with
+        the work itself become help requests through the defined escalation
+        path. Temporary execution failures that exhaust automatic retries also
+        enter the defined escalation path.
+    unlikelyResolution:
+        When further autonomous attempts no longer look likely to resolve a
+        problem, obtain engineer input rather than continuing unsuccessful
+        repair or review cycles. Apply this through the existing escalation
+        path and continue independent work where possible. This decision does
+        not establish a fixed attempt count or time limit for substantive
+        problem resolution.
+    gracefulShutdown:
+        On graceful shutdown, the factory stops starting new steps, lets running
+        steps finish, and saves pending work for the next start.

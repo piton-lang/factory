@@ -1,0 +1,67 @@
+export abstract anchor FactoryOrchestration:
+    orchestration:
+        The factory runs independently and owns general orchestration. Agents
+        perform explicit execution steps of tasks; no agent owns the general
+        orchestration loop.
+    integrationPrinciple:
+        Deterministic controls with agent-based wiring is a general factory
+        design principle. Code implements the controls and their routine
+        execution semantics. Agents establish the environment-specific wiring
+        for harness connections, build and test commands, remote machines, and
+        delivery integrations. Apply this principle beyond remote builds.
+        Wiring centers on known factory buttons, meaning defined operations
+        with deterministic controls. Those operations must be configurable
+        enough for agents to write integration code connecting them to the
+        environment. Agents save reusable wiring; ordinary code executes it
+        afterward, bringing agents back when wiring needs changes or repair.
+        The exact operation set and wiring representation remain open.
+    wiringValidation:
+        Each factory button defines a standard check that its agent-written
+        wiring must pass before use. The check verifies the integration's
+        expected behavior, such as running a small remote build and returning
+        its result. Exact checks for each operation remain to be defined.
+    factoryStateOperations:
+        Agents add tasks, revise plans and dependencies, and report results
+        through defined factory operations rather than directly editing
+        internal factory records or its database. Ordinary code validates
+        permissions and consistency and preserves recovery history for these
+        changes. Agents may still write project files and integration wiring
+        as assigned. The operation transport and storage implementation remain
+        choices for the consuming project.
+    operationRetries:
+        Give factory operation requests identifiers so retries after a lost
+        response return the original result without repeating the action.
+        Prevent duplicate tasks, builds, or agent launches from retries of the
+        same request. The identifier representation and retention mechanism
+        remain implementation choices.
+    wiringRepair:
+        When saved wiring breaks, the factory automatically assigns an agent
+        to restore its intended behavior within the existing configuration and
+        authorization. Repaired wiring must pass the operation's standard
+        check before use. Changes to the intended setup, such as selecting a
+        different provider, buying capacity, or changing delivery destinations,
+        require engineer input. Failed repairs follow the existing escalation
+        path.
+    executionHarnesses:
+        The initial supported agent harnesses are Claude Code, Codex, and
+        OpenCode. Harness integration must accommodate API-backed accounts and
+        subscription accounts. Integration contracts remain unspecified.
+        The engineer currently uses Claude, Codex, MiMo, and DeepSeek, with
+        OpenCode in the setup. The exact mapping of each model or account to a
+        harness has not been confirmed.
+    engineerInput:
+        When the smartest agent determines that a question is for the engineer,
+        the factory obtains input from the engineer. While the answer is
+        pending, independent work continues as much as possible. Only steps
+        that depend on the answer are blocked by that question.
+    monitoring:
+        The engineer can monitor the factory through both a dashboard and
+        updates through the conversational agent. The dashboard shows orders,
+        steps, agents, and questions requiring engineer input. Update delivery
+        mechanisms and frequency remain unspecified.
+    engineerControl:
+        The engineer initiates work with a prompt and can start or gracefully
+        shut down the factory. Routine execution is autonomous; engineer controls
+        are deliberately minimal and do not provide per-order pause, resume,
+        cancellation, or revision controls for micromanagement. Engineer answers
+        to questions escalated by agents remain supported.

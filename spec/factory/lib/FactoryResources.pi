@@ -1,0 +1,91 @@
+export abstract anchor FactoryResources:
+    buildAndTestCapacity:
+        The factory manages build and test capacity in addition to agent
+        concurrency. Ordinary code queues build and test jobs and enforces
+        available capacity; AI agents do not make routine capacity allocation
+        decisions. Remote builds are a first-class capability required in the
+        initial version. The resource model remains unspecified.
+    remoteBuildWiring:
+        Remote builds have deterministic controls and behavior implemented in
+        code, including queueing, dispatch, and capacity enforcement. Agents
+        handle the project- and machine-specific wiring that connects those
+        controls to actual remote build environments. Preserve this separation
+        between deterministic controls and agent-based wiring. The wiring's
+        representation remains unspecified; its reuse, repair, and validation
+        follow the general integration principle and wiring validation policy.
+    spendingLimits:
+        API account budgets established during setup are enforced in the
+        initial scope. This supersedes the earlier deferral of custom spending
+        caps insofar as API account budgets are concerned. Additional per-order
+        or factory-wide caps remain on the roadmap. Usage limits also account
+        for available spending in an API account and the remaining usage
+        allowance on a subscription account.
+        Usage and availability should be obtained from the existing harnesses
+        or provider APIs as much as possible. When an account runs out of
+        available usage, the factory asks the engineer how to proceed.
+        Independent work continues where possible under the engineer-input
+        policy. When fresh usage readings are unavailable, continue assigning
+        work using cautious estimates based on the last known allowance and
+        subsequent work. Missing readings alone do not stop dispatch. Estimates
+        remain subject to the account limits and budgets; the exact estimation
+        method and uncertainty handling remain unresolved.
+    resourceOptimization:
+        The factory aims for speed, quality, and economy. Initial setup asks
+        the engineer how many Claude subscriptions are available, their kinds,
+        and the budgets available for API accounts, along with the relevant
+        account resources. Maximize use of available subscription allowances
+        without exceeding them, and keep API spending within its budgets.
+        When appropriate, ask the engineer whether more API funds can be added;
+        do not assume that additional funds are authorized.
+        Ordinary code continually adjusts resource usage through a PID-style
+        feedback algorithm. The target is maximum useful throughput at all
+        times within all applicable constraints, without exceeding subscription
+        allowances, API budgets, or build capacity. Adapt allocation to the
+        current bottleneck. When subscription availability is the constraint,
+        maximize effective work within that allowance. When build servers are
+        the constraint, maximize useful subscription work in planning at a
+        pace aligned with build throughput. Optimize effectiveness rather than
+        utilization of an individual resource in isolation.
+        The exact measurements, control outputs, tuning, and treatment of
+        delayed usage data remain unresolved. A downstream-work priority rule
+        has not been adopted as the scheduling policy.
+    adaptiveModelSelection:
+        Model routing depends on thresholds set by the engineer. The factory
+        continually researches the changing model landscape and adapts its
+        optimization within those thresholds. Evaluate models using returned
+        work and higher-tier reviewers' assessments, alongside capability,
+        speed, throttling, and API or subscription economics. Model selection
+        must evolve with observed results rather than rely on fixed rankings.
+        The engineer currently describes DeepSeek Flash as very fast with
+        generous throttling, and MiMo as more capable but slower, aggressively
+        throttled, and offering a subscription plan. These are the engineer's
+        observations, not permanent provider guarantees or verified current
+        product claims. The factory asks the engineer before trying a newly
+        researched model. Exact thresholds and evaluation methods remain
+        unresolved.
+    accountAllocation:
+        Automatically distribute new work across approved accounts according
+        to the best optimization of speed, quality, and economy within the
+        engineer's configured thresholds, account allowances, and API budgets.
+        Routine allocation among approved accounts does not require approval
+        for each switch. Exhausted-account notifications and requests for
+        additional funds still follow the engineer-input policies.
+    paidFallbackDecision:
+        When subscription capacity is temporarily throttled and paid API
+        capacity could avoid the wait, ask the engineer to choose between
+        spending more to finish sooner and waiting to save money. Available
+        API budget alone does not authorize this tradeoff. Routine allocation
+        within an already approved policy remains automatic.
+    taskSpecificModelEvaluation:
+        Learn model strengths and weaknesses separately by kind of work using
+        returned results and higher-tier review assessments. Use that history
+        to guide routing of similar work. A model's success on routine changes
+        must not imply equal suitability for complex numerical algorithms or
+        other different kinds of work. Task categories and the exact evaluation
+        method remain unresolved.
+    outcomeEfficiency:
+        Judge model efficiency by the total time and cost to reach an accepted
+        result, including review passes and corrections, rather than only the
+        first attempt. Smarter models perform a review pass where appropriate
+        to assess the result. Use these assessments in the task-specific model
+        evaluation, while retaining risk-appropriate review depth.

@@ -1,0 +1,80 @@
+export abstract anchor FactoryAdoption:
+    projectSpecificRealization:
+        This project's deliverable is the factory specification, not a single
+        factory implementation. Consuming projects tether the specification
+        through Piton and use it to build a factory suited to their project.
+        The engineer chooses the implementation language and other appropriate
+        implementation choices. Each project's factory grows gradually with
+        that project's needs. Keep reusable requirements distinct from those
+        project-specific implementation choices. Do not assume one shared
+        factory service or centrally shared model-performance history.
+    incrementalAdoptionAndEvolution:
+        A consuming project initially implements only the factory capabilities
+        it needs. As needs grow, its factory can read the tethered factory
+        specification and use its own task execution capabilities to dispatch
+        work that enhances its implementation. Support this self-evolution
+        rather than requiring every specified capability at initial adoption.
+        How enhancement needs are identified remains unresolved. Activation
+        follows the self-update continuity requirements.
+    selfEnhancementAuthority:
+        Ask the engineer before initiating factory enhancement tasks by
+        default. The engineer may authorize automatic approval of future
+        enhancements within the scope of that instruction. Such authorization
+        does not itself expand account budgets or other configured limits.
+    needDrivenEnhancement:
+        Prefer fulfilling an order with existing capabilities when they can
+        do the work well. Propose a factory enhancement when a missing
+        capability blocks the order or would materially improve delivery,
+        especially when it will be reused. Tie self-improvement to project
+        needs and follow the established enhancement approval policy.
+    selfUpdateContinuity:
+        Factory enhancements must preserve ongoing work. The update mechanism
+        depends on the technology chosen by the consuming project. Apply
+        updates while running when the implementation supports doing so
+        without stopping ongoing work. Otherwise wait for a suitable moment
+        to restart, or propose a restart to the engineer. Do not mandate one
+        universal update mechanism across implementations.
+    tetherUpdateReconciliation:
+        When an update to the tethered factory specification conflicts with
+        project-specific customizations, an agent proposes a reconciliation
+        for the engineer to decide. Do not silently give either the updated
+        specification or existing customizations precedence.
+    specificationChangeAuthority:
+        When agents discover a gap or contradiction requiring a project
+        specification change, they ask the engineer before amending it by
+        default. The engineer may grant broad authorization, such as go ahead
+        and make all modifications, allowing agents to make specification
+        changes within that authorization without seeking approval for each
+        change. The scope and duration of that authorization follow the
+        engineer's instruction.
+    configuration:
+        Initial configuration is developed through a series of prompt questions
+        driven by an agent. The resulting configuration is written to an actual
+        configuration file. Setup includes the account and budget questions in
+        resourceOptimization. Other initial options, file format, and location
+        remain unspecified.
+    initialOperatingPolicy:
+        During onboarding, an agent recommends an initial operating policy
+        based on the project's needs, available accounts, and build capacity.
+        The engineer reviews and approves that policy. The resource controller
+        may tune execution within the approved policy; this does not authorize
+        changing its boundaries or increasing budgets without approval.
+    existingWorkResumption:
+        Support continuing work begun under the existing ad hoc factory rather
+        than requiring that work to start over. Represent the project context,
+        workflow, and relevant prior progress through the new factory's general
+        concepts. The mechanism for carrying over existing artifacts and
+        reconciling them with the new factory remains undecided; this does not
+        require reproducing the old factory's implementation or fixed pipeline.
+        Resumption need not preserve a one-to-one mapping to the old factory.
+        Many specifics may be discarded. Inspect the existing factory to inform
+        further interview questions about what to include and disregard, rather
+        than treating its details as requirements by default.
+    evidenceBasedAdoption:
+        As a general capability, assess whatever evidence already exists of a
+        project's build process, factory, or ad hoc pseudo-factory. Import its
+        data and work while transitioning it to the new project-specific
+        factory. This applies beyond Popcorn and includes assessment of the
+        evidence rather than automatically trusting every existing status or
+        requiring all work to start over. The import mechanism and exact
+        mapping of existing artifacts remain project-specific decisions.

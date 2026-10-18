@@ -1,5 +1,6 @@
 use @piton/belay
 use @piton/config
+use @piton/packaging
 
 from @piton/belay import CodexAdapter
 
@@ -10,6 +11,9 @@ export piton-config Project:
     frameworks:
         - {Belay}
 
+    packages:
+        - {FactoryPackage}
+
     dependencies:
         - https://github.com/piton-lang/crux.git
 
@@ -18,3 +22,7 @@ belay-config Belay:
 
     adapters:
         - {CodexAdapter}
+
+piton-package FactoryPackage:
+    name: factory
+    root: ./spec/factory

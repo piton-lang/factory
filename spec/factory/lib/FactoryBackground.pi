@@ -1,0 +1,71 @@
+export abstract anchor FactoryBackground:
+    illustrativeModels:
+        The user's main-agent example is Claude Opus 5.5, mid-tier example is
+        Sonnet, and cheap implementation-agent example is DeepSeek Flash. These
+        illustrate the intended intelligence and cost hierarchy; they are not
+        verified model identifiers or fixed model requirements.
+    proposedFoundation:
+        DeepSeek Harness is a candidate foundation and is explicitly not
+        required. Its official repository is
+        https://github.com/deepseek-ai/deepseek-harness. Repository documentation
+        describes a plugin-based harness in developer preview. Suitability for
+        this factory's orchestration and delegation remains to be evaluated.
+    candidateTokenOptimization:
+        The engineer is interested in evaluating Jev from TypeSafe AI to reduce
+        token usage. Adoption is not decided. Official documentation at
+        https://docs.typesafe.ai/introduction/quickstart and the vendor site at
+        https://typesafe.ai describe structured decisions with confidence
+        estimates. Candidate uses include model-tier routing and context
+        relevance scoring; actual savings and decision quality require
+        evaluation. These uses are suggestions, not confirmed requirements.
+    existingPrototype:
+        The engineer already has an ad hoc factory described through a running
+        Claude prompt for the Popcorn project at
+        /home/hyphyphyph/matter-and-logic/popcorn. Related orchestration artifacts
+        live in /home/hyphyphyph/matter-and-logic/popcorn-build.
+        Inspected reference documents include popcorn/progress/factory-handoff.md,
+        popcorn/factory-dashboard/README.md, popcorn-build/ORCHESTRATOR-HANDOFF.md,
+        and popcorn-build/RUNBOOK.md. They document dispatch, planning, merge
+        workers, usage monitoring, recovery procedures, a dashboard, and a Jev
+        progress service. These are observations about the existing prototype,
+        not automatically requirements for the general-purpose factory. The
+        running Claude prompt itself has not been inspected.
+    initialSuccessCriteria:
+        The new factory should be able to resume the engineer's existing
+        Popcorn work from its current progress. Popcorn's workflow and operating
+        rules must remain project-specific rather than being baked into the
+        general-purpose factory. Detailed acceptance scenarios and the exact
+        boundary of work to resume remain unresolved.
+    openQuestions:
+        - Exact contents and representation of orders, tasks, steps, and their handoffs.
+        - Scheduling priorities, plan conflict representation, and handling of affected steps during delegated conflict resolution.
+        - Build and test resource model.
+        - Known factory operation set, integration wiring representation, and per-operation validation checks across harnesses, builds, tests, and delivery.
+        - Resolution of peer revision proposals when no smarter tier is available.
+        - Configuration of intelligence levels and roles.
+        - Engineer-set model-routing thresholds, task categories, and reviewer-based model evaluation methods.
+        - Configuration interview contents and configuration file format and location.
+        - Detailed responsibilities and handoffs for merging, testing, and review agents.
+        - Worktree allocation, integration, and cleanup policies.
+        - Recovery reconciliation details and retry defaults.
+        - Shutdown handling when running steps hang or await engineer input.
+        - Account allowance visibility, cautious usage estimation, and uncertainty handling for unavailable or delayed readings.
+        - PID-style resource control measurements, outputs, tuning, and speed-quality-economy tradeoffs.
+        - Integration contracts for Claude Code, Codex, and OpenCode.
+        - DeepSeek Harness integration and support for the chosen agent providers.
+        - Mapping existing Popcorn artifacts and progress into the new factory, the resumption boundary, and detailed acceptance scenarios.
+        - Existing Jev progress integration and its relevance to proposed token optimization.
+        - Tethered specification updates, identification of self-enhancement needs, and implementation-specific update and restart criteria.
+        - Whether and how model-performance learning transfers between project-specific factories.
+    specificationStatus:
+        Eight interview rounds totaling 65 answered questions are complete.
+        The requested final round of 5 questions is complete and incorporated
+        into this specification. The interview is finished; remaining open
+        questions are recorded explicitly rather than silently assumed.
+    interviewFocus:
+        No interview question is pending. The final round established engineer
+        input when autonomous resolution looks unlikely, need-driven factory
+        enhancements, priority-first capacity allocation, general evidence-based
+        adoption of existing work, and agent-recommended operating policies for
+        engineer approval. Do not automatically begin another interview round
+        or implementation work.

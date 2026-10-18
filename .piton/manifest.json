@@ -18,7 +18,7 @@
     ".agents/skills/factory-0010-optimize/SKILL.md",
     ".agents/skills/factory-0010-shutdown/SKILL.md",
     ".agents/skills/factory-0010-start/SKILL.md",
-    ".codex/reference/Factory.md"
+    ".codex/reference/factory/Factory.md"
   ],
   "targets": {
     "codex": "2026-09-21"
