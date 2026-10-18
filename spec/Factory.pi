@@ -26,6 +26,12 @@ export anchor Factory:
         default. The engineer may authorize automatic approval of future
         enhancements within the scope of that instruction. Such authorization
         does not itself expand account budgets or other configured limits.
+    needDrivenEnhancement:
+        Prefer fulfilling an order with existing capabilities when they can
+        do the work well. Propose a factory enhancement when a missing
+        capability blocks the order or would materially improve delivery,
+        especially when it will be reused. Tie self-improvement to project
+        needs and follow the established enhancement approval policy.
     selfUpdateContinuity:
         Factory enhancements must preserve ongoing work. The update mechanism
         depends on the technology chosen by the consuming project. Apply
@@ -86,6 +92,14 @@ export anchor Factory:
         it to break down a feature. When the engineer instructs it to begin, that
         agent can submit an order summarizing its understanding to the factory.
         The conversational agent need not be the agent used for factory planning.
+    conflictingOrders:
+        When a new order conflicts with active work, delegate assessment of the
+        conflict and present a concrete recommendation to the engineer,
+        including work that would be replaced or reused. A new order does not
+        silently cancel earlier intent. An explicit engineer instruction to
+        replace the old approach authorizes proceeding under the existing
+        supersession rules. Independent work may continue while clarification
+        is pending.
     planningAndExecution:
         A smart, expensive agent plans work at a broad level sufficient for a
         mid-tier agent to elaborate. Mid-tier agents produce specific, detailed
@@ -125,6 +139,12 @@ export anchor Factory:
         executing affected steps.
         Dependency readiness makes a step eligible to run; available capacity
         determines when it starts.
+    orderPriorities:
+        When orders compete for constrained capacity, favor completing the
+        highest-priority order sooner. Other orders may use capacity that the
+        higher-priority order cannot use. At equal priorities, favor finishing
+        work already underway to avoid accumulating half-finished results.
+        Exact priority representation remains a project implementation choice.
     revisionsDuringExecution:
         The design should make revisions affecting running steps rare. When an
         authorized revision does affect running work, the factory marks that
@@ -180,6 +200,13 @@ export anchor Factory:
         the work itself become help requests through the defined escalation
         path. Temporary execution failures that exhaust automatic retries also
         enter the defined escalation path.
+    unlikelyResolution:
+        When further autonomous attempts no longer look likely to resolve a
+        problem, obtain engineer input rather than continuing unsuccessful
+        repair or review cycles. Apply this through the existing escalation
+        path and continue independent work where possible. This decision does
+        not establish a fixed attempt count or time limit for substantive
+        problem resolution.
     spendingLimits:
         API account budgets established during setup are enforced in the
         initial scope. This supersedes the earlier deferral of custom spending
@@ -332,6 +359,12 @@ export anchor Factory:
         configuration file. Setup includes the account and budget questions in
         resourceOptimization. Other initial options, file format, and location
         remain unspecified.
+    initialOperatingPolicy:
+        During onboarding, an agent recommends an initial operating policy
+        based on the project's needs, available accounts, and build capacity.
+        The engineer reviews and approves that policy. The resource controller
+        may tune execution within the approved policy; this does not authorize
+        changing its boundaries or increasing budgets without approval.
     illustrativeModels:
         The user's main-agent example is Claude Opus 5.5, mid-tier example is
         Sonnet, and cheap implementation-agent example is DeepSeek Flash. These
@@ -380,6 +413,14 @@ export anchor Factory:
         Many specifics may be discarded. Inspect the existing factory to inform
         further interview questions about what to include and disregard, rather
         than treating its details as requirements by default.
+    evidenceBasedAdoption:
+        As a general capability, assess whatever evidence already exists of a
+        project's build process, factory, or ad hoc pseudo-factory. Import its
+        data and work while transitioning it to the new project-specific
+        factory. This applies beyond Popcorn and includes assessment of the
+        evidence rather than automatically trusting every existing status or
+        requiring all work to start over. The import mechanism and exact
+        mapping of existing artifacts remain project-specific decisions.
     openQuestions:
         - Exact contents and representation of orders, tasks, steps, and their handoffs.
         - Scheduling priorities, plan conflict representation, and handling of affected steps during delegated conflict resolution.
@@ -402,13 +443,14 @@ export anchor Factory:
         - Tethered specification updates, identification of self-enhancement needs, and implementation-specific update and restart criteria.
         - Whether and how model-performance learning transfers between project-specific factories.
     specificationStatus:
-        Six interview rounds totaling 55 answered questions are complete.
-        A seventh round is in progress with a budget of 5 additional questions
-        and 4 answered so far. Prioritize weak operation contracts while
-        preserving established decisions in this same specification.
+        Eight interview rounds totaling 65 answered questions are complete.
+        The requested final round of 5 questions is complete and incorporated
+        into this specification. The interview is finished; remaining open
+        questions are recorded explicitly rather than silently assumed.
     interviewFocus:
-        Question 5 of 5 asks how the factory handles incoming orders that
-        conflict with active work on the same project. Conflicting tether
-        updates require an agent-proposed reconciliation for engineer decision.
-        Paid API fallback to avoid subscription throttling requires an engineer
-        decision. Questions should focus on substantive tradeoffs.
+        No interview question is pending. The final round established engineer
+        input when autonomous resolution looks unlikely, need-driven factory
+        enhancements, priority-first capacity allocation, general evidence-based
+        adoption of existing work, and agent-recommended operating policies for
+        engineer approval. Do not automatically begin another interview round
+        or implementation work.

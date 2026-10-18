@@ -1,0 +1,44 @@
+use @piton/belay
+from ../Factory import Factory
+from ./lib/FactorySkillBase import FactorySkillBase
+
+export skill Factory0010Start extends FactorySkillBase:
+    description: Start or resume a project factory, reconciling saved work and surviving sessions.
+    useWhen: starting a configured project factory or resuming it after shutdown or interruption
+    prompt:
+        Discover the actual startup operations and approved configuration.
+        Check whether the factory is already running; use the existing instance
+        rather than start duplicate services. Starting this skill authorizes
+        startup within the established operating policy, not new budgets or
+        capabilities. If setup is missing, identify what onboarding must supply.
+
+        Follow @{Factory.restartRecovery}, @{Factory.failedAttempts}, and
+        @{Factory.operationRetries}. Inspect preserved orders, plans, step
+        attempts, briefs, results, worktrees, operation requests, and harness
+        session references before issuing new execution requests.
+
+        Reconcile each affected attempt with the harness and artifact evidence.
+        Reconnect to surviving sessions and let them continue. Do not launch
+        replacements for work still running or blindly repeat completed work.
+        A disconnected client is not proof that the underlying session ended.
+        Keep uncertain liveness explicit and investigate through supported
+        harness operations before claiming a safe replacement.
+
+        Report recovered implementation results through the normal higher-level
+        completion assessment. Preserve superseded outputs for possible reuse;
+        they do not automatically satisfy the revised plan. Respect changed
+        prerequisite versions and pending reconciliation.
+
+        Use configured limited retries for temporary execution failures and
+        reuse the original operation request identifier when its outcome is
+        uncertain. Exhausted retries and substantive work problems enter the
+        agent escalation path. Obtain engineer input when resolution looks
+        unlikely; do not reset attempt history to create endless retries.
+        Update state through factory operations, not direct database repair.
+        After reconciliation, start or resume dispatch through the actual
+        factory controls within approved limits. Verify service health and
+        dispatch state. Do not claim readiness from process existence alone.
+
+    result:
+        Report surviving sessions, recovered results, uncertain attempts,
+        retries or escalations, and the evidence that prevents duplicate work.

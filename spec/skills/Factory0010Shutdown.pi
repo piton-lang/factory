@@ -1,0 +1,26 @@
+use @piton/belay
+from ../Factory import Factory
+from ./lib/FactorySkillBase import FactorySkillBase
+
+export skill Factory0010Shutdown extends FactorySkillBase:
+    description: Gracefully shut down a project factory while preserving running and pending work.
+    useWhen: stopping a factory or winding it down for a later restart
+    prompt:
+        Follow @{Factory.gracefulShutdown} and @{Factory.restartRecovery}.
+        Discover the actual factory shutdown operations and current services,
+        sessions, builds, and pending work. Stop dispatching new steps, allow
+        running steps to finish, and preserve pending work for the next start.
+        Keep infrastructure needed by running steps available until they finish.
+
+        Use deterministic controls for shutdown, not ad hoc edits to state or
+        broad process kills. Verify that dispatch is stopped and persist plans,
+        briefs, status, results, worktree references, and harness session
+        references needed for recovery. Preserve completion assessment handoffs.
+
+        If running work hangs or awaits engineer input, explain the remaining
+        blocker and obtain a decision rather than invent a timeout or silently
+        terminate it. Respect an explicit engineer instruction for a different
+        shutdown scope. Report incomplete shutdown honestly.
+    result:
+        Report whether dispatch and services stopped, work still running,
+        preserved pending work, recovery references, and unresolved blockers.

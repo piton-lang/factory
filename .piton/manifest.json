@@ -13,6 +13,11 @@
     ".agents/skills/crux-spec-impact/SKILL.md",
     ".agents/skills/crux-spec-refactor/SKILL.md",
     ".agents/skills/crux-spec-review/SKILL.md",
+    ".agents/skills/factory-0010-focus-on/SKILL.md",
+    ".agents/skills/factory-0010-onboard/SKILL.md",
+    ".agents/skills/factory-0010-optimize/SKILL.md",
+    ".agents/skills/factory-0010-shutdown/SKILL.md",
+    ".agents/skills/factory-0010-start/SKILL.md",
     ".codex/reference/Factory.md"
   ],
   "targets": {

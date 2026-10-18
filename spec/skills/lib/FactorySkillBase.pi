@@ -1,0 +1,34 @@
+from ../../Factory import Factory
+from @piton/belay import Skill
+
+export abstract anchor FactorySkillBase extends Skill:
+    specificationAuthority:
+        Read the relevant requirements in @{Factory}; follow its sections for
+        this task rather than loading unrelated operational history. This is
+        a tetherable specification, not one shared factory implementation.
+        Consuming projects choose their technology and implement only needed
+        capabilities. Treat examples and open questions as such.
+
+        Before editing Piton, read the complete output of piton agent
+        --print-fluency once per context. Inspect piton.config.pi and the
+        consuming project's entry and relevant source. Change .pi source,
+        never generated guidance or tethered package files. Use project-owned
+        specifications for local decisions. Validate source changes with
+        piton format, piton check, and piton build, then inspect generated
+        differences. A diff exit status of 1 means differences, not failure;
+        distinguish it from an actual diff error.
+    operatingBoundary:
+        Discover the project's actual factory operations and approved policy;
+        do not invent commands, schemas, model identifiers, or defaults for
+        unresolved decisions. Agents change plans, dependencies, and task
+        records through defined factory operations, not internal state edits.
+        Reuse request identifiers when retrying an operation after an unknown
+        response. If a needed operation is absent, describe that gap and use
+        the enhancement policy rather than bypassing validation.
+
+        Preserve existing authorization. Specification amendments and factory
+        enhancements require engineer approval unless already authorized.
+        New-model trials and additional funds require engineer input. Keep
+        independent work moving while questions block only affected work.
+        When autonomous resolution looks unlikely, escalate to the engineer.
+        Skill invocation grants no unrelated deployment or external action.

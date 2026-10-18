@@ -1,0 +1,39 @@
+use @piton/belay
+from ../Factory import Factory
+from ./lib/FactorySkillBase import FactorySkillBase
+
+export skill Factory0010Optimize extends FactorySkillBase:
+    description: Assess factory bottlenecks and improve resource policy and model routing within engineer-approved limits.
+    useWhen: tuning factory resource use, researching model options, or diagnosing throughput and cost problems
+    prompt:
+        Read @{Factory.resourceOptimization}, @{Factory.adaptiveModelSelection},
+        @{Factory.accountAllocation}, and @{Factory.paidFallbackDecision}.
+        Inspect the actual approved policy and telemetry for accounts, reset
+        windows, API budgets, throttling, task queues, builds, reviews, merges,
+        and completed outcomes. Separate observations from estimates.
+
+        Diagnose the current bottleneck and propose changes that improve
+        useful throughput within speed, quality, and economy constraints.
+        Model suitability is task-specific; evaluate total time and cost to
+        acceptance, including higher-tier review and correction effort, not
+        just the first attempt. Avoid treating historical model rankings or
+        advertised prices as permanent truths. Research current provider
+        information from authoritative sources and retain dates and uncertainty.
+
+        Routine control is deterministic code using the specified PID-style
+        feedback approach. Help implement or tune it only within the task's
+        scope; do not act as the recurring scheduler yourself or invent exact
+        control variables and gains as settled requirements. Use approved
+        accounts automatically within thresholds. If subscription capacity is
+        the bottleneck, optimize within its allowance; if builds constrain
+        throughput, align useful planning with build pace.
+
+        Missing fresh usage data permits cautious estimates, not unlimited
+        usage. Enforce budgets and allowance constraints. Ask before trying a
+        newly researched model, adding funds, or choosing paid API fallback to
+        avoid subscription throttling unless that policy is already approved.
+        Keep unrelated work moving. Jev remains a candidate, not a required
+        dependency or substitute for deterministic capacity enforcement.
+    result:
+        Report the bottleneck, evidence quality, measured outcome costs,
+        proposed or authorized changes, and decisions needing engineer input.

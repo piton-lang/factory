@@ -2,4 +2,5 @@
 // them is what has the build emit them for each adapter; `piton update crux`
 // brings in a newer crux.
 from ./Factory export *
+from ./skills export *
 from crux export *

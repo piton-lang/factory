@@ -1,0 +1,39 @@
+use @piton/belay
+from ../Factory import Factory
+from ./lib/FactorySkillBase import FactorySkillBase
+
+export skill Factory0010FocusOn extends FactorySkillBase:
+    description: Focus factory effort on an engineer-selected objective, order, bottleneck, or capability.
+    useWhen: directing or reprioritizing factory work toward a specific goal or problem
+    prompt:
+        Establish the requested focus from the engineer's instruction and the
+        current project context. Read @{Factory.orderPriorities},
+        @{Factory.conflictingOrders}, and @{Factory.revisionAuthority}.
+        Identify relevant active orders, prerequisites, existing results, and
+        constraints. Ask only if the intended focus cannot be inferred.
+
+        Reuse existing work and adjust priorities through factory operations.
+        Submit or revise an order when execution is requested; a request to
+        investigate or plan remains within that scope. Use a mid-tier workflow
+        proposer by default and escalate difficult planning. Delegate focused
+        briefs containing objective, requirements, expected output, completion
+        criteria, and links to relevant context. Higher-level agents assess
+        outcomes without taking over substantial implementation themselves.
+
+        Focus does not silently cancel unrelated work or expand budgets.
+        Favor the highest-priority order while other work uses capacity it
+        cannot use. For conflicts with earlier intent, assess what can be
+        reused or replaced and obtain engineer direction unless replacement
+        is already explicit. Apply authorized revisions and supersession rules.
+        Resolve conflicting plan revisions through another authorized agent.
+
+        If the focus is an integration problem, create reusable wiring around
+        known deterministic operations and require its standard check before
+        use. If it calls for a new factory capability, prefer adequate existing
+        capabilities first and follow enhancement approval. If it calls for
+        review or integration, use risk-appropriate independent assessment and
+        project-defined checks on combined changes. Keep routine scheduling,
+        execution, and resource enforcement in code.
+    result:
+        Report the selected focus, affected orders and priorities, delegated
+        work, preserved independent work, and decisions awaiting input.
