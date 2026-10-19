@@ -4,20 +4,28 @@
 
 *Dispatch, liveness, retries, jobs, capacity, and unresolved attempts.*
 
+Execution dispatches steps, tracks sessions, retries safe failures, and refuses
+to guess when an external effect is uncertain.
+
+## When liveness is unknown
+
 ```mermaid
 flowchart TD
     A["Attempt is running"] --> B{"Liveness?"}
     B -->|alive| C["Reconnect and continue"]
     B -->|ended| D["Record the outcome"]
-    B -->|unknown| E["Do not relaunch"]
-    E --> F{"Resolution deadline reached?"}
-    F -->|no| G["Investigate through the harness"]
-    F -->|yes| H["Attempt becomes unresolved"]
-    H --> I{"Engineer decision"}
-    I -->|session ended| J["Interrupted"]
-    I -->|no effect happened| K["Failed"]
-    I -->|authorize replacement| L["Old attempt orphaned, new attempt created"]
+    B -->|unknown| E["Do not relaunch; investigate"]
+    E --> F{"Deadline reached?"}
+    F -->|no| E
+    F -->|yes| G["Attempt becomes unresolved"]
+    G --> H{"Engineer decision"}
+    H -->|session ended| I["Interrupted"]
+    H -->|no effect| J["Failed"]
+    H -->|replace| K["Orphaned, then a new attempt"]
 ```
+
+The sections below explain dispatch, retries, jobs, capacity, and the
+`unresolved` state in detail.
 
 ## Dispatch
 

@@ -4,17 +4,35 @@
 
 *The records and states the rest of the documentation assumes.*
 
+These are the records the rest of the documentation assumes. You do not need to
+memorize them. Use this page as a map and come back when a term is unfamiliar.
+
+## The core records
+
 ```mermaid
 erDiagram
     ORDER ||--o{ STEP : contains
     STEP ||--o{ ATTEMPT : dispatches
-    ATTEMPT ||--o{ SESSION : uses
     ATTEMPT ||--o{ RESULT : produces
     ORDER ||--o{ QUESTION : raises
     ORDER ||--o{ TARGET : delivers_to
     TARGET ||--o{ RECEIPT : records
-    RESULT ||--o{ EVIDENCE : cites
 ```
+
+An order contains steps. Steps are dispatched as attempts. Attempts produce
+results. The same order can raise questions and deliver to targets, and each
+target records receipts. Sessions and evidence belong to attempts and results.
+
+| Record | What it is |
+| --- | --- |
+| **Order** | The unit of requested work |
+| **Step** | A unit of planning and delegation inside an order |
+| **Attempt** | One dispatch of a step |
+| **Session** | The harness-side execution of an attempt |
+| **Result** | The outcome of an attempt, with evidence |
+| **Question** | An engineer-facing decision request |
+| **Target** | Where an order is delivered |
+| **Receipt** | Proof of one delivery attempt |
 
 ## Order
 

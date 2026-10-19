@@ -4,6 +4,10 @@
 
 *The .factory/project.json schema and path rules.*
 
+The descriptor is the one fixed file every factory exposes. It tells tools how
+to invoke the factory, where its configuration lives, and which specification
+version it was built against.
+
 ## Location
 
 The descriptor is `.factory/project.json`, encoded as UTF-8 JSON.

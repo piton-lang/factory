@@ -3,28 +3,27 @@ title: Conformance
 description: What must be proven, who may verify it, and when a report is admissible.
 ---
 
+Conformance is independent evidence that an implementation still matches the
+specification. A successful compile or a scaffold smoke test is not conformance.
+
+## The conformance path
+
 ```mermaid
 flowchart TD
-    A["Verifier principal"] --> B{"In the excluded set?"}
-    B -->|yes| C["Reject"]
-    B -->|no| D["Run scenarios and matrices"]
-    D --> E["Sign the report and anchor its hash"]
-    E --> F["Separate admission check"]
-    F --> G{"Admissible?"}
-    G -->|no| H["Reject with a reason"]
-    G -->|yes| I{"All required scenarios pass?"}
-    I -->|no| J["Implementation gap"]
-    I -->|yes| K["Conformance claim allowed"]
-    K --> L{"Spec, implementation, descriptor, capability, or environment changed?"}
-    L -->|yes| M["Expire the pass"]
-    L -->|no| N["Valid until 90 days"]
+    A["Independent verifier"] --> B["Run scenarios and matrices"]
+    B --> C["Sign the report and anchor its hash"]
+    C --> D{"Admission check"}
+    D -->|inadmissible| E["Reject with a reason"]
+    D -->|admissible| F{"All required scenarios pass?"}
+    F -->|no| G["Implementation gap"]
+    F -->|yes| H["Conformance claim allowed"]
+    H --> I["Pass expires on a relevant change or after 90 days"]
 ```
 
-## What conformance is
+Independence is checked before the run. The sections below list the scenarios,
+matrices, verifier rules, and admissibility requirements.
 
-Conformance is evidence that an implementation still matches the
-specification. Successful compilation is not conformance. A scaffold passing a
-smoke check is not conformance.
+## What conformance is
 
 Conformance uses typed scenarios and matrices, a distinct verifier, a signed
 write-once report, and an admission check.

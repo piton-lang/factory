@@ -11,8 +11,10 @@ down, resume, and pass a conformance check.
 It is intentionally hand-held. Each lesson ends with a checkpoint. Do not skip
 a checkpoint; the next lesson assumes it passed.
 
+## The path
+
 ```mermaid
-flowchart LR
+flowchart TD
     S1["1. Install Piton"] --> S2["2. Add the package"]
     S2 --> S3["3. Scaffold"]
     S3 --> S4["4. Onboard"]
@@ -20,6 +22,16 @@ flowchart LR
     S5 --> S6["6. Answer and deliver"]
     S6 --> S7["7. Shut down and verify"]
 ```
+
+| Lesson | You finish with |
+| --- | --- |
+| [1. Install Piton](./01-install-piton.md) | A git project that passes `piton check` |
+| [2. Add the factory package](./02-add-factory.md) | The factory skills generated in your project |
+| [3. Scaffold the factory](./03-scaffold.md) | A runnable core and a valid descriptor |
+| [4. Onboard](./04-onboard.md) | A factory that reports **operational** |
+| [5. Submit your first order](./05-first-order.md) | An order that is moving or waiting for a clear reason |
+| [6. Answer and deliver](./06-answer-deliver.md) | A delivered change with receipts and evidence |
+| [7. Shut down and verify](./07-shutdown-verify.md) | Preserved work, a clean resume, and a conformance report |
 
 ## What you will build
 
@@ -48,17 +60,10 @@ onboarding often takes longer because you are deciding budgets and limits.
 
 ## How to use this tutorial
 
-Do the lessons in order:
+Do the lessons in order. Each one starts with what you will do, ends with a
+checkpoint, and has an “if it fails” section for the common problems.
 
-1. [Install Piton](./01-install-piton.md)
-2. [Add the factory package](./02-add-factory.md)
-3. [Scaffold the factory](./03-scaffold.md)
-4. [Onboard](./04-onboard.md)
-5. [Submit your first order](./05-first-order.md)
-6. [Answer and deliver](./06-answer-deliver.md)
-7. [Shut down and verify](./07-shutdown-verify.md)
-
-If you get stuck, each lesson has a short “if it fails” section. The
+If you get stuck, the
 [troubleshooting section in the setup guide](../start/setup.md#common-problems) has
 more detail.
 

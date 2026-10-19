@@ -4,18 +4,23 @@
 
 *Actors, authorization rows, capabilities, audit chains, and verification access.*
 
+Every operation is authorized, checked again before the effect, and audited.
+Agents get narrow scopes, and verification is independent.
+
+## Every operation is checked
+
 ```mermaid
 flowchart LR
-    A["Operation request"] --> B["Verify signed actor context"]
-    B --> C{"Actor class and capability valid?"}
-    C -->|no| D["Deny and audit"]
-    C -->|yes| E{"Target and precondition valid?"}
-    E -->|no| D
-    E -->|yes| F["Check capability again before the effect"]
-    F --> G{"Still valid?"}
-    G -->|no| H["Tombstone intent and escalate"]
-    G -->|yes| I["Apply effect and audit"]
+    A["Operation request"] --> B{"Actor, capability, and target valid?"}
+    B -->|no| C["Deny and audit"]
+    B -->|yes| D["Check capability before the effect"]
+    D --> E{"Still valid?"}
+    E -->|no| F["Tombstone intent and escalate"]
+    E -->|yes| G["Apply effect and audit"]
 ```
+
+The sections below define actors, authorization rows, capabilities, audit
+chains, read scopes, and verification access.
 
 ## Actor classes
 

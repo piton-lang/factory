@@ -3,19 +3,24 @@ title: Self-enhancement
 description: Periodic review, proposals, approval, rollback, and model/category lifecycle.
 ---
 
+The factory improves itself through evidence-backed proposals, explicit
+approval, and tested rollback. It cannot silently change its own controls.
+
+## The improvement loop
+
 ```mermaid
 flowchart LR
-    A["Completed, failed, blocked, or cancelled work"] --> B["Periodic review"]
-    B --> C["Proposal with evidence and expected benefit"]
-    C --> D{"Approved?"}
-    D -->|no| E["Rejected or parked"]
-    D -->|yes| F["Enhancement order plus independent assessment"]
-    F --> G{"Rollback tested?"}
-    G -->|no| H["Do not activate"]
-    G -->|yes| I["Activate as a separate step"]
-    I --> J["Observe outcomes"]
-    J --> B
+    Evidence["Completed, failed, and blocked work"] --> Review["Periodic review"]
+    Review --> Proposal["Proposal with evidence"]
+    Proposal --> Approve{"Engineer approves?"}
+    Approve -->|no| Park["Reject or park"]
+    Approve -->|yes| Test["Enhancement order and rollback test"]
+    Test --> Activate["Activate separately"]
+    Activate -.->|observe| Review
 ```
+
+Activation is a separate step after the enhancing order terminates. A change
+without a tested rollback is not applied automatically.
 
 ## Why the factory changes
 

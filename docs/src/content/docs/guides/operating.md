@@ -3,6 +3,10 @@ title: Operating a factory
 description: Status, dashboard, questions, shutdown, and truthful observability.
 ---
 
+Day-to-day operation is mostly `status`, answering questions, and `shutdown`.
+This page explains what each surface shows, how to read freshness, and what
+happens when you stop the factory.
+
 ## The engineer surface
 
 The core commands are `onboard`, `start`, `submit`, `status`, `answer`, and
@@ -14,19 +18,6 @@ and shutdown remain CLI and onboarding surfaces.
 
 Every exposed action uses the same operation envelope and authorization as the
 CLI, with one request identifier and one effect.
-
-```mermaid
-stateDiagram-v2
-    [*] --> Current
-    Current --> Stale: age exceeds limit
-    Current --> Unknown: no reading yet
-    Current --> Unavailable: source cannot be reached
-    Stale --> Current: fresh reading
-    Unknown --> Current: first reading
-    Unavailable --> Current: source recovers
-    Stale --> Unavailable: source lost
-    Unavailable --> Unknown: no previous reading
-```
 
 ## What status reports
 
@@ -57,11 +48,23 @@ Every fact has a value and an independent state:
 - `unknown`
 - `unavailable`
 
+```mermaid
+stateDiagram-v2
+    [*] --> Unknown
+    Unknown --> Current: first reading
+    Current --> Stale: age exceeds limit
+    Current --> Unavailable: source unreachable
+    Stale --> Current: fresh reading
+    Unavailable --> Current: source recovers
+    Stale --> Unavailable: source lost
+```
+
 A real zero is a value with state `current`, not a state. Precedence is
 unavailable, unknown, stale, then current.
 
 Unknown means no reading has ever been obtained. Unavailable means the source
-cannot be reached. A derived fact inherits the worst state of its required
+cannot be reached. If an unavailable source recovers with no previous reading,
+the fact becomes unknown. A derived fact inherits the worst state of its required
 inputs. It is withheld only when no value can be produced; withholding renders
 as unknown, never as silent omission.
 

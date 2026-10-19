@@ -10,8 +10,10 @@ down, resume, and pass a conformance check.
 It is intentionally hand-held. Each lesson ends with a checkpoint. Do not skip
 a checkpoint; the next lesson assumes it passed.
 
+## The path
+
 ```mermaid
-flowchart LR
+flowchart TD
     S1["1. Install Piton"] --> S2["2. Add the package"]
     S2 --> S3["3. Scaffold"]
     S3 --> S4["4. Onboard"]
@@ -19,6 +21,16 @@ flowchart LR
     S5 --> S6["6. Answer and deliver"]
     S6 --> S7["7. Shut down and verify"]
 ```
+
+| Lesson | You finish with |
+| --- | --- |
+| [1. Install Piton](/tutorial/01-install-piton/) | A git project that passes `piton check` |
+| [2. Add the factory package](/tutorial/02-add-factory/) | The factory skills generated in your project |
+| [3. Scaffold the factory](/tutorial/03-scaffold/) | A runnable core and a valid descriptor |
+| [4. Onboard](/tutorial/04-onboard/) | A factory that reports **operational** |
+| [5. Submit your first order](/tutorial/05-first-order/) | An order that is moving or waiting for a clear reason |
+| [6. Answer and deliver](/tutorial/06-answer-deliver/) | A delivered change with receipts and evidence |
+| [7. Shut down and verify](/tutorial/07-shutdown-verify/) | Preserved work, a clean resume, and a conformance report |
 
 ## What you will build
 
@@ -47,17 +59,10 @@ onboarding often takes longer because you are deciding budgets and limits.
 
 ## How to use this tutorial
 
-Do the lessons in order:
+Do the lessons in order. Each one starts with what you will do, ends with a
+checkpoint, and has an “if it fails” section for the common problems.
 
-1. [Install Piton](/tutorial/01-install-piton/)
-2. [Add the factory package](/tutorial/02-add-factory/)
-3. [Scaffold the factory](/tutorial/03-scaffold/)
-4. [Onboard](/tutorial/04-onboard/)
-5. [Submit your first order](/tutorial/05-first-order/)
-6. [Answer and deliver](/tutorial/06-answer-deliver/)
-7. [Shut down and verify](/tutorial/07-shutdown-verify/)
-
-If you get stuck, each lesson has a short “if it fails” section. The
+If you get stuck, the
 [troubleshooting section in the setup guide](/start/setup/#common-problems) has
 more detail.
 

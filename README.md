@@ -6,39 +6,37 @@ and uses it to plan, execute, review, and deliver work across AI agents.
 
 The specification is the source of truth and lives under `spec/factory`.
 
-## New here?
+## Start here
 
-Start with the hand-held tutorial:
+| If you want to... | Read |
+| --- | --- |
+| Build a working factory step by step | [Getting started tutorial](docs/github/tutorial/README.md) |
+| Understand the idea first | [How it works](docs/github/start/how-it-works.md) |
+| Set up an existing project | [Set up in a new project](docs/github/start/setup.md) |
+| Run your first order | [First run](docs/github/start/quickstart.md) |
+| Operate a factory day to day | [Operating a factory](docs/github/guides/operating.md) |
+| Understand the tradeoffs | [Design choices](docs/github/start/choices.md) |
+| Implement or verify one | [Commands](docs/github/reference/commands.md) and [Descriptor](docs/github/reference/descriptor.md) |
 
-- [Getting started tutorial](docs/github/tutorial/README.md)
-- [1. Install Piton](docs/github/tutorial/01-install-piton.md)
-- [2. Add the factory package](docs/github/tutorial/02-add-factory.md)
-- [3. Scaffold the factory](docs/github/tutorial/03-scaffold.md)
-- [4. Onboard](docs/github/tutorial/04-onboard.md)
-- [5. Submit your first order](docs/github/tutorial/05-first-order.md)
-- [6. Answer and deliver](docs/github/tutorial/06-answer-deliver.md)
-- [7. Shut down and verify](docs/github/tutorial/07-shutdown-verify.md)
-
-If you already know how it works, use the [setup guide](docs/github/start/setup.md)
-or the [first-run guide](docs/github/start/quickstart.md).
+The tutorial is the hand-held path: install Piton, add the package, scaffold,
+onboard, submit an order, deliver it, then shut down and verify.
 
 ## Documentation
 
 - [Full documentation index](docs/github/README.md)
-- [How it works](docs/github/start/how-it-works.md)
-- [Design choices](docs/github/start/choices.md)
-- [Operating a factory](docs/github/guides/operating.md)
-- [Commands](docs/github/reference/commands.md)
-- [Descriptor](docs/github/reference/descriptor.md)
+- [Core concepts](docs/github/start/concepts.md)
+- [States](docs/github/reference/states.md)
+- [Operations](docs/github/reference/operations.md)
+- [Glossary](docs/github/reference/glossary.md)
 
 The Markdown under `docs/github` is generated from the Astro Starlight source
-in `docs/src/content/docs`. Rebuild both the site and the Markdown tree with:
+in `docs/src/content/docs`. Rebuild the site and the Markdown tree with:
 
 ```sh
 ./build-docs.sh
 ```
 
-The browsable site can be run with:
+To work on the browsable site:
 
 ```sh
 cd docs

@@ -4,16 +4,22 @@
 
 *The semantic operation contract, envelope, actors, and authorization.*
 
+Agents and humans change factory state through the same named operations. An
+operation carries intent, an actor, a target, and the version it expects, so
+the factory can enforce authority and consistency before anything changes.
+
 ## The envelope
 
 Every request carries:
 
-- request identifier;
-- operation name;
-- actor;
-- target;
-- payload;
-- expected order aggregate version for a mutation of an existing order.
+| Part | Purpose |
+| --- | --- |
+| Request identifier | Makes retries idempotent |
+| Operation name | Says what is being attempted |
+| Actor | Identifies who is asking |
+| Target | Identifies the record or resource |
+| Payload | Carries the operation-specific data |
+| Expected version | Prevents lost updates on an existing order |
 
 Creating an order aggregate presents an absence or uniqueness precondition
 instead. Creating or changing a record inside an existing order still presents

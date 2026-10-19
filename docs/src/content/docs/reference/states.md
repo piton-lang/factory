@@ -3,23 +3,33 @@ title: States
 description: The state machines an implementation must represent.
 ---
 
+These are the state machines an implementation must represent. The tables are
+authoritative. The diagrams show the common paths; they do not list every
+implementation detail.
+
+| Machine | Main values |
+| --- | --- |
+| Order | submitted, active, blocked, completed, failed, cancelled |
+| Step | pending, ready, running, paused, blocked, completed, failed, cancelled, superseded, deferred |
+| Attempt | intent, launching, running, completed, failed, interrupted, unresolved, cancelled, orphaned |
+| Session liveness | alive, ended, unknown |
+
+## Order states
+
 ```mermaid
 stateDiagram-v2
     [*] --> submitted
     submitted --> active: accepted and planned
-    active --> blocked: no progress without a decision or resource
-    blocked --> active: decision or resource arrives
-    active --> completed: required work accepted and delivered
-    active --> failed: no authorized path forward
     submitted --> cancelled: rejected or withdrawn
-    active --> cancelled: replaced or stopped by authority
-    blocked --> cancelled: replaced or stopped by authority
-    completed --> [*]
-    failed --> [*]
-    cancelled --> [*]
+    active --> blocked: decision or resource needed
+    blocked --> active: unblocked
+    active --> completed: accepted and delivered
+    active --> failed: no authorized path forward
+    active --> cancelled: stopped by authority
+    blocked --> cancelled: stopped by authority
 ```
 
-## Order states
+`completed`, `failed`, and `cancelled` are terminal.
 
 | State | Meaning |
 | --- | --- |
@@ -45,28 +55,25 @@ Order phases:
 Phase precedence: assessing, delivering, integrating, executing, planning.
 Phase is null for submitted and terminal orders.
 
+## Step states
+
 ```mermaid
 stateDiagram-v2
     [*] --> pending
     pending --> ready: dependencies satisfied
+    pending --> deferred: engineer approval
     ready --> running: dispatch
     running --> paused: plan conflict or revision
-    paused --> ready: resolved
     running --> blocked: help, answer, or wiring repair
+    paused --> ready: resolved
     blocked --> ready: unblocked
     running --> completed: result assessed
     running --> failed: retries exhausted or escalation
     running --> cancelled: authority
     running --> superseded: authorized revision
-    pending --> deferred: engineer approval
-    completed --> [*]
-    failed --> [*]
-    cancelled --> [*]
-    superseded --> [*]
-    deferred --> [*]
 ```
 
-## Step states
+`completed`, `failed`, `cancelled`, `superseded`, and `deferred` are terminal.
 
 | State | Meaning |
 | --- | --- |
@@ -85,27 +92,24 @@ A step becomes cancelled or superseded only after its attempt is terminal.
 Until then it stays running with a cancelling blocker. A failed, cancelled,
 superseded, or unresolved prerequisite blocks dependents.
 
+## Attempt states
+
 ```mermaid
 stateDiagram-v2
     [*] --> intent
-    intent --> launching: commit intent and request launch
+    intent --> launching: intent committed, launch requested
     launching --> running: session confirmed
     running --> completed: result recorded
     running --> failed: confirmed terminal failure
     running --> interrupted: shutdown, restart, or confirmed stop
     running --> unresolved: effect may or may not have happened
-    unresolved --> interrupted: terminal evidence or confirmed stop
-    unresolved --> failed: engineer confirms no effect
-    unresolved --> orphaned: engineer authorizes replacement
     running --> cancelled: authority
-    completed --> [*]
-    failed --> [*]
-    interrupted --> [*]
-    cancelled --> [*]
-    orphaned --> [*]
+    unresolved --> interrupted: session ended
+    unresolved --> failed: no effect confirmed
+    unresolved --> orphaned: replacement authorized
 ```
 
-## Attempt states
+`completed`, `failed`, `interrupted`, `cancelled`, and `orphaned` are terminal.
 
 | State | Meaning |
 | --- | --- |

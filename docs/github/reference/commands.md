@@ -4,6 +4,19 @@
 
 *The six core commands, optional commands, and invocation.*
 
+The factory has six core commands. Every other command is optional.
+
+## A typical session
+
+```sh
+factory onboard
+factory start
+factory submit "Add a health endpoint at /health and document it"
+factory status
+factory answer <question-id> "Use the existing auth middleware"
+factory shutdown
+```
+
 ## Core commands
 
 | Command | Purpose |

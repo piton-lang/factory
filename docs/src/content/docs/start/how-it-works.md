@@ -17,23 +17,18 @@ Think of the factory as a project manager with a team.
 You do not have to prompt every worker. You give the factory an order and it
 handles the handoffs.
 
+## At a glance
+
 ```mermaid
-flowchart LR
-    You["You submit an order"] --> Planner["Planner breaks it down"]
-    Planner --> Briefs["Detailed briefs"]
-    Briefs --> Ready{"Ready to run?"}
-    Ready -->|dependencies, budget, capacity| Worker["Agents execute steps"]
-    Ready -->|blocked| Wait["Wait or ask"]
-    Wait --> Answer["Engineer answers"]
-    Answer --> Ready
-    Worker --> Review["Independent assessment"]
-    Review --> Accepted{"Accepted?"}
-    Accepted -->|no| Revise["Revise or supersede"]
-    Revise --> Worker
-    Accepted -->|yes| Integrate["Integrate combined changes"]
-    Integrate --> Checks["Run checks on the combined result"]
-    Checks --> Deliver["Deliver to the target"]
-    Deliver --> Record["Receipts and evidence"]
+flowchart TD
+    A["You submit an order"] --> B["Factory plans and schedules"]
+    B --> C["Agents execute steps in parallel"]
+    C --> D{"Independent assessment"}
+    D -->|revise| C
+    D -->|accept| E["Integrate, check, and deliver"]
+    E --> F["Receipts and evidence"]
+    C -.->|question| G["You answer"]
+    G -.-> C
 ```
 
 ## What happens to an order

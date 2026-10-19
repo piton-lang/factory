@@ -3,24 +3,21 @@ title: Recovery
 description: Restart reconciliation, unresolved work, leases, retries, and the recovery matrix.
 ---
 
+Recovery reconciles what the factory recorded with what actually happened outside
+it. It does not replay history or retry uncertain effects.
+
+## Startup in one picture
+
 ```mermaid
 flowchart TD
-    S["Startup and writer lock"] --> A["Store and audit integrity"]
-    A --> B["Configuration digest and snapshots"]
-    B --> C["Plans and worktree ownership"]
-    C --> D["Bind effect intents and idempotency claims"]
-    D --> E["Classify deliveries under the old epoch"]
-    E --> F["Sessions"]
-    F --> G["Attempts"]
-    G --> H["Jobs"]
-    H --> I["Deliveries and receipts"]
-    I --> J["Retry and breaker state"]
-    J --> K["Reservations, unresolved exposure, queue, capacity"]
-    K --> L{"All clear?"}
-    L -->|yes| M["Admit dispatch"]
-    L -->|global failure| N["Read-only and escalate"]
-    L -->|scope failure| O["Pause only that scope"]
+    A["Restart and take the writer lock"] --> B["Reconcile records and external evidence"]
+    B --> C{"All scopes clear?"}
+    C -->|yes| D["Admit dispatch"]
+    C -->|scope failure| E["Pause that scope"]
+    C -->|global failure| F["Go read-only and escalate"]
 ```
+
+The reconciliation order and the evidence used at each stage are listed below.
 
 ## Recovery is reconciliation, not replay
 

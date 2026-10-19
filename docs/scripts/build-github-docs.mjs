@@ -237,6 +237,18 @@ function renderIndex() {
     'Start with the **Getting started tutorial** if you are new. It takes you',
     'from an empty project to a working factory, one lesson at a time.',
     '',
+    '## Choose your path',
+    '',
+    '| If you want to... | Read |',
+    '| --- | --- |',
+    '| Build a working factory step by step | [Getting started tutorial](tutorial/README.md) |',
+    '| Understand the idea first | [How it works](start/how-it-works.md) |',
+    '| Set up an existing project | [Set up in a new project](start/setup.md) |',
+    '| Run your first order | [First run](start/quickstart.md) |',
+    '| Operate a factory day to day | [Operating a factory](guides/operating.md) |',
+    '| Understand the tradeoffs | [Design choices](start/choices.md) |',
+    '| Implement or verify one | [Commands](reference/commands.md) and [Descriptor](reference/descriptor.md) |',
+    '',
   ];
 
   for (const group of navigation) {

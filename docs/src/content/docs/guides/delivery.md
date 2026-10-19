@@ -3,23 +3,27 @@ title: Delivery and integration
 description: Targets, candidates, outcomes, partial delivery, compensation, and acceptance.
 ---
 
+Delivery integrates accepted work onto a target and records proof. This page
+covers targets, leases, outcomes, partial delivery, compensation, and final
+acceptance.
+
+## The delivery path
+
 ```mermaid
 sequenceDiagram
-    participant O as Order
-    participant Q as Integration queue
+    participant F as Factory
     participant T as Target
     participant A as Independent assessor
-    participant D as Delivery
-    O->>Q: candidate plus prerequisite revisions
-    Q->>T: acquire lease and check revision
-    Q->>T: reapply and run combined checks
-    T-->>Q: exact candidate revision
-    Q->>A: assess the exact revision
-    A-->>D: accepted
-    D->>T: deliver
-    T-->>D: receipt
-    D-->>O: completed with evidence
+    F->>T: integrate candidate and run combined checks
+    T-->>F: exact candidate revision
+    F->>A: assess that revision
+    A-->>F: accepted
+    F->>T: deliver
+    T-->>F: receipt
 ```
+
+Assessment happens before the external delivery effect. A receipt is recorded
+for each target.
 
 ## Targets and delivery units
 

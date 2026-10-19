@@ -3,14 +3,23 @@ title: Onboarding and configuration
 description: What onboarding produces, how configuration is modeled, and how changes are applied.
 ---
 
+Onboarding turns a specification-only project into a working factory. It records
+your decisions, validates configuration and credentials, and reports
+**operational** only when the six commands and dashboard actually work.
+
+## The onboarding path
+
 ```mermaid
 stateDiagram-v2
     [*] --> Specified
-    Specified --> Configured: config, references, policy, descriptor
+    Specified --> Configured: decisions, config, policy, descriptor
     Configured --> Operational: commands and dashboard validated
     Operational --> Configured: configuration change and restart
     Configured --> Specified: implementation removed
 ```
+
+The states are cumulative. A project can stop at any state, and the report says
+which one it reached.
 
 ## What onboarding produces
 
