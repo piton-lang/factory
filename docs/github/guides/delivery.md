@@ -4,6 +4,24 @@
 
 *Targets, candidates, outcomes, partial delivery, compensation, and acceptance.*
 
+```mermaid
+sequenceDiagram
+    participant O as Order
+    participant Q as Integration queue
+    participant T as Target
+    participant A as Independent assessor
+    participant D as Delivery
+    O->>Q: candidate plus prerequisite revisions
+    Q->>T: acquire lease and check revision
+    Q->>T: reapply and run combined checks
+    T-->>Q: exact candidate revision
+    Q->>A: assess the exact revision
+    A-->>D: accepted
+    D->>T: deliver
+    T-->>D: receipt
+    D-->>O: completed with evidence
+```
+
 ## Targets and delivery units
 
 A target record carries an identifier, kind, destination, baseline and current

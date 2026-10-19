@@ -3,6 +3,20 @@ title: Self-enhancement
 description: Periodic review, proposals, approval, rollback, and model/category lifecycle.
 ---
 
+```mermaid
+flowchart LR
+    A["Completed, failed, blocked, or cancelled work"] --> B["Periodic review"]
+    B --> C["Proposal with evidence and expected benefit"]
+    C --> D{"Approved?"}
+    D -->|no| E["Rejected or parked"]
+    D -->|yes| F["Enhancement order plus independent assessment"]
+    F --> G{"Rollback tested?"}
+    G -->|no| H["Do not activate"]
+    G -->|yes| I["Activate as a separate step"]
+    I --> J["Observe outcomes"]
+    J --> B
+```
+
 ## Why the factory changes
 
 A project starts with only the capabilities it needs. As work grows, a missing

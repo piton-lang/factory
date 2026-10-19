@@ -3,6 +3,25 @@ title: Recovery
 description: Restart reconciliation, unresolved work, leases, retries, and the recovery matrix.
 ---
 
+```mermaid
+flowchart TD
+    S["Startup and writer lock"] --> A["Store and audit integrity"]
+    A --> B["Configuration digest and snapshots"]
+    B --> C["Plans and worktree ownership"]
+    C --> D["Bind effect intents and idempotency claims"]
+    D --> E["Classify deliveries under the old epoch"]
+    E --> F["Sessions"]
+    F --> G["Attempts"]
+    G --> H["Jobs"]
+    H --> I["Deliveries and receipts"]
+    I --> J["Retry and breaker state"]
+    J --> K["Reservations, unresolved exposure, queue, capacity"]
+    K --> L{"All clear?"}
+    L -->|yes| M["Admit dispatch"]
+    L -->|global failure| N["Read-only and escalate"]
+    L -->|scope failure| O["Pause only that scope"]
+```
+
 ## Recovery is reconciliation, not replay
 
 On restart the factory does not replay history. It reconciles durable records

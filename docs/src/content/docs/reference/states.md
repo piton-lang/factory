@@ -3,6 +3,22 @@ title: States
 description: The state machines an implementation must represent.
 ---
 
+```mermaid
+stateDiagram-v2
+    [*] --> submitted
+    submitted --> active: accepted and planned
+    active --> blocked: no progress without a decision or resource
+    blocked --> active: decision or resource arrives
+    active --> completed: required work accepted and delivered
+    active --> failed: no authorized path forward
+    submitted --> cancelled: rejected or withdrawn
+    active --> cancelled: replaced or stopped by authority
+    blocked --> cancelled: replaced or stopped by authority
+    completed --> [*]
+    failed --> [*]
+    cancelled --> [*]
+```
+
 ## Order states
 
 | State | Meaning |
@@ -29,6 +45,27 @@ Order phases:
 Phase precedence: assessing, delivering, integrating, executing, planning.
 Phase is null for submitted and terminal orders.
 
+```mermaid
+stateDiagram-v2
+    [*] --> pending
+    pending --> ready: dependencies satisfied
+    ready --> running: dispatch
+    running --> paused: plan conflict or revision
+    paused --> ready: resolved
+    running --> blocked: help, answer, or wiring repair
+    blocked --> ready: unblocked
+    running --> completed: result assessed
+    running --> failed: retries exhausted or escalation
+    running --> cancelled: authority
+    running --> superseded: authorized revision
+    pending --> deferred: engineer approval
+    completed --> [*]
+    failed --> [*]
+    cancelled --> [*]
+    superseded --> [*]
+    deferred --> [*]
+```
+
 ## Step states
 
 | State | Meaning |
@@ -47,6 +84,26 @@ Phase is null for submitted and terminal orders.
 A step becomes cancelled or superseded only after its attempt is terminal.
 Until then it stays running with a cancelling blocker. A failed, cancelled,
 superseded, or unresolved prerequisite blocks dependents.
+
+```mermaid
+stateDiagram-v2
+    [*] --> intent
+    intent --> launching: commit intent and request launch
+    launching --> running: session confirmed
+    running --> completed: result recorded
+    running --> failed: confirmed terminal failure
+    running --> interrupted: shutdown, restart, or confirmed stop
+    running --> unresolved: effect may or may not have happened
+    unresolved --> interrupted: terminal evidence or confirmed stop
+    unresolved --> failed: engineer confirms no effect
+    unresolved --> orphaned: engineer authorizes replacement
+    running --> cancelled: authority
+    completed --> [*]
+    failed --> [*]
+    interrupted --> [*]
+    cancelled --> [*]
+    orphaned --> [*]
+```
 
 ## Attempt states
 

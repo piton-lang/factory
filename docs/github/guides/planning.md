@@ -4,6 +4,24 @@
 
 *Orders, priorities, dependencies, estimates, and concurrent plan revisions.*
 
+```mermaid
+flowchart TD
+    A["Two plan revisions"] --> B{"Conflict?"}
+    B -->|no| C["Apply the revision"]
+    B -->|yes| D["Identify changed steps and their downstream dependents"]
+    D --> E["Pause the affected subtree"]
+    E --> F["Keep unrelated work moving"]
+    F --> G["Authorized agent merges both revisions"]
+    G --> H{"Kinds of disagreement"}
+    H -->|compatible| I["Keep both"]
+    H -->|implementation| J["Resolver decides"]
+    H -->|intent| K["Engineer decides"]
+    I --> L["Revalidate paused steps"]
+    J --> L
+    K --> L
+    L --> M["Revise, supersede, resume, or preserve results"]
+```
+
 ## From order to plan
 
 An order may arrive from a prompt, a specification, or both. A smart, expensive

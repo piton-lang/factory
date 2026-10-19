@@ -3,6 +3,15 @@ title: Onboarding and configuration
 description: What onboarding produces, how configuration is modeled, and how changes are applied.
 ---
 
+```mermaid
+stateDiagram-v2
+    [*] --> Specified
+    Specified --> Configured: config, references, policy, descriptor
+    Configured --> Operational: commands and dashboard validated
+    Operational --> Configured: configuration change and restart
+    Configured --> Specified: implementation removed
+```
+
 ## What onboarding produces
 
 Onboarding produces or updates:

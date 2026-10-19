@@ -15,6 +15,19 @@ and shutdown remain CLI and onboarding surfaces.
 Every exposed action uses the same operation envelope and authorization as the
 CLI, with one request identifier and one effect.
 
+```mermaid
+stateDiagram-v2
+    [*] --> Current
+    Current --> Stale: age exceeds limit
+    Current --> Unknown: no reading yet
+    Current --> Unavailable: source cannot be reached
+    Stale --> Current: fresh reading
+    Unknown --> Current: first reading
+    Unavailable --> Current: source recovers
+    Stale --> Unavailable: source lost
+    Unavailable --> Unknown: no previous reading
+```
+
 ## What status reports
 
 `status` must report:

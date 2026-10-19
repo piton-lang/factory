@@ -3,6 +3,21 @@ title: Execution
 description: Dispatch, liveness, retries, jobs, capacity, and unresolved attempts.
 ---
 
+```mermaid
+flowchart TD
+    A["Attempt is running"] --> B{"Liveness?"}
+    B -->|alive| C["Reconnect and continue"]
+    B -->|ended| D["Record the outcome"]
+    B -->|unknown| E["Do not relaunch"]
+    E --> F{"Resolution deadline reached?"}
+    F -->|no| G["Investigate through the harness"]
+    F -->|yes| H["Attempt becomes unresolved"]
+    H --> I{"Engineer decision"}
+    I -->|session ended| J["Interrupted"]
+    I -->|no effect happened| K["Failed"]
+    I -->|authorize replacement| L["Old attempt orphaned, new attempt created"]
+```
+
 ## Dispatch
 
 A step is eligible when its dependencies are satisfied, budget and account

@@ -4,6 +4,23 @@
 
 *What must be proven, who may verify it, and when a report is admissible.*
 
+```mermaid
+flowchart TD
+    A["Verifier principal"] --> B{"In the excluded set?"}
+    B -->|yes| C["Reject"]
+    B -->|no| D["Run scenarios and matrices"]
+    D --> E["Sign the report and anchor its hash"]
+    E --> F["Separate admission check"]
+    F --> G{"Admissible?"}
+    G -->|no| H["Reject with a reason"]
+    G -->|yes| I{"All required scenarios pass?"}
+    I -->|no| J["Implementation gap"]
+    I -->|yes| K["Conformance claim allowed"]
+    K --> L{"Spec, implementation, descriptor, capability, or environment changed?"}
+    L -->|yes| M["Expire the pass"]
+    L -->|no| N["Valid until 90 days"]
+```
+
 ## What conformance is
 
 Conformance is evidence that an implementation still matches the

@@ -10,6 +10,16 @@ down, resume, and pass a conformance check.
 It is intentionally hand-held. Each lesson ends with a checkpoint. Do not skip
 a checkpoint; the next lesson assumes it passed.
 
+```mermaid
+flowchart LR
+    S1["1. Install Piton"] --> S2["2. Add the package"]
+    S2 --> S3["3. Scaffold"]
+    S3 --> S4["4. Onboard"]
+    S4 --> S5["5. Submit an order"]
+    S5 --> S6["6. Answer and deliver"]
+    S6 --> S7["7. Shut down and verify"]
+```
+
 ## What you will build
 
 A project-owned factory with:

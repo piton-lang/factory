@@ -4,6 +4,18 @@
 
 *The records and states the rest of the documentation assumes.*
 
+```mermaid
+erDiagram
+    ORDER ||--o{ STEP : contains
+    STEP ||--o{ ATTEMPT : dispatches
+    ATTEMPT ||--o{ SESSION : uses
+    ATTEMPT ||--o{ RESULT : produces
+    ORDER ||--o{ QUESTION : raises
+    ORDER ||--o{ TARGET : delivers_to
+    TARGET ||--o{ RECEIPT : records
+    RESULT ||--o{ EVIDENCE : cites
+```
+
 ## Order
 
 An order is the unit of requested work. It carries an identifier, the source

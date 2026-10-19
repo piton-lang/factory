@@ -3,6 +3,19 @@ title: Security and audit
 description: Actors, authorization rows, capabilities, audit chains, and verification access.
 ---
 
+```mermaid
+flowchart LR
+    A["Operation request"] --> B["Verify signed actor context"]
+    B --> C{"Actor class and capability valid?"}
+    C -->|no| D["Deny and audit"]
+    C -->|yes| E{"Target and precondition valid?"}
+    E -->|no| D
+    E -->|yes| F["Check capability again before the effect"]
+    F --> G{"Still valid?"}
+    G -->|no| H["Tombstone intent and escalate"]
+    G -->|yes| I["Apply effect and audit"]
+```
+
 ## Actor classes
 
 - **Engineer** — may read and act across the factory.

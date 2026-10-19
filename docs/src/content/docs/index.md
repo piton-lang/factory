@@ -17,6 +17,19 @@ This site explains:
 - **how to use it** day to day;
 - **the rules behind it**, if you need to implement or verify one.
 
+```mermaid
+flowchart LR
+    Engineer["Engineer"] --> Surface["CLI and dashboard"]
+    Agent["Conversational agent"] --> Surface
+    Surface --> Operations["Semantic operations"]
+    Operations --> Core["Factory control plane"]
+    Core --> Store["Plans, results, budgets, leases, audit"]
+    Core --> Adapters["Harness and build adapters"]
+    Adapters --> Harness["Claude Code, Codex, OpenCode"]
+    Adapters --> Build["Build and test capacity"]
+    Adapters --> Delivery["Branches, PRs, environments, packages"]
+```
+
 ## Start here
 
 1. [Getting started tutorial](/tutorial/)

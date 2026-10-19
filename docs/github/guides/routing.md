@@ -4,6 +4,24 @@
 
 *Ledgers, reservations, usage attribution, reset windows, and learned routing.*
 
+```mermaid
+flowchart TD
+    A["Work needs to start"] --> B["Choose account and route"]
+    B --> C["Reserve budget and allowance"]
+    C --> D{"Admission total below cap?"}
+    D -->|no| E["Block with budget reason"]
+    D -->|yes| F{"Concurrency slot free?"}
+    F -->|no| G["Wait in queue"]
+    G --> F
+    F -->|yes| H["Run the attempt or job"]
+    H --> I["Read provider usage"]
+    I --> J{"Reading advances high-water?"}
+    J -->|yes| K["Reconcile once"]
+    J -->|no| L["Keep the estimate"]
+    K --> M["Release or update reservation"]
+    L --> M
+```
+
 ## Two ledgers
 
 Each account has exactly one scalar ledger:
