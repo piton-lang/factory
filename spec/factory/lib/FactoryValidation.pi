@@ -1,0 +1,48 @@
+export abstract anchor FactoryValidation:
+    activation:
+        Activation requires a passing check for the exact content hash. The
+        previous active version remains available for rollback only while its
+        check is valid. If no retained version has a valid check, the operation
+        is unavailable and the reason is escalated; the factory does not guess.
+        Re-running a check creates a new activation record even when content is
+        unchanged. Credential rotation invalidates affected checks through a
+        credential-to-version index.
+    checkSpecification:
+        Each operation declares a check: name, inputs, expected result, timeout,
+        cost ceiling, cleanup, criticality, TTL, and manual eligibility. The
+        preferred check exercises the wiring end to end in an isolated sandbox
+        with disposable targets and no production or customer effects.
+        If no harmless automated check is possible, a manual check may be
+        approved per operation by the engineer. The engineer records its
+        result, evidence, actor, and expiry. An agent cannot declare its own
+        operation manual.
+    checkExecution:
+        Checks run on registration, on wiring or credential change, after
+        repair, at the per-operation TTL, and after a related failure. Related
+        means operation plus route plus wiring version plus error signature.
+        Due checks trigger revalidation but stay active through a grace period;
+        expired checks deactivate the wiring. A check that cannot run because of
+        capacity, exhausted allowance, or provider outage reports an
+        unavailable-check blocker and does not silently drift from due to
+        expired.
+        Checks are serialized per wiring version and activation uses
+        compare-and-swap. Check cost is reserved under the control budget, in
+        currency and usage units, with a per-interval cap. A check exceeding its
+        declared ceiling needs engineer approval. Cleanup failure is a failed
+        check.
+    checkFailure:
+        Classification is normative and stored on the check record. Provider 401
+        or 403 is auth; 429 is rate limit or exhausted allowance depending on
+        allowance data; 5xx, network failure, and timeout after a previously
+        passing check are outage; schema, parse, exit-code, or response-shape
+        mismatch is wiring; missing configuration is config; ambiguity is
+        unknown and does not auto-repair. A 429 with stale or missing allowance
+        data is treated as throttling with an immediate refresh; repeated
+        unexplained refusals escalate.
+        An exhausted allowance makes the check unavailable, not failed: it does
+        not deactivate wiring or start repair, and its TTL does not expire into
+        deactivation while blocked.
+        A failed check stops new dispatch on that wiring; in-flight work
+        continues pinned. If a critical operation has no available route,
+        factory dispatch pauses with a blocker. Repair is scoped, authorized,
+        and budgeted. Repeated outages escalate.

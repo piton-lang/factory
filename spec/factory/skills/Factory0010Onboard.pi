@@ -13,13 +13,13 @@ export skill Factory0010Onboard extends FactorySkillBase:
         proposing new capabilities. Reuse established decisions.
 
         Interview only for missing consequential decisions, one clear question
-        at a time. Establish the engineer's implementation preferences and the
-        capabilities needed now. Gather available harnesses and accounts,
-        subscription counts and kinds, allowances and reset information where
-        available, API budgets, build capacity and remote environments, routing
-        thresholds, and delivery preferences. Obtain secret references through
-        the project's credential mechanism rather than putting credentials in
-        the specification or conversation.
+        at a time. Always establish the implementation choice, available
+        harnesses and account kinds, budgets and allowance limits, build and
+        test capacity, delivery preference, and an approved initial operating
+        policy. Ask further only for the chosen capabilities, remote-build
+        setup, routing thresholds, and existing-work import. Obtain secret
+        references through the project's credential mechanism rather than
+        putting credentials in the specification or conversation.
 
         Recommend a concrete starting operating policy with its assumptions,
         account boundaries, routing choices, resource constraints, and engineer
@@ -30,8 +30,11 @@ export skill Factory0010Onboard extends FactorySkillBase:
         Persist approved decisions in project-owned Piton and, when an
         implementation exists, its actual configuration format through its
         supported operations. This package prescribes no universal config
-        schema or language. If only a specification exists, identify the
-        missing implementation rather than claim configuration is active.
+        schema or language. Create or update the factory descriptor with the
+        invocation, configuration location, tethered specification version, and
+        dashboard location when applicable. If only a specification exists,
+        identify the missing implementation rather than claim configuration is
+        active.
         Build only when the user has requested implementation; implement the
         needed subset rather than the entire capability catalog.
     existingWork:

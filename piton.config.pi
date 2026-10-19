@@ -2,7 +2,7 @@ use @piton/belay
 use @piton/config
 use @piton/packaging
 
-from @piton/belay import CodexAdapter
+from @piton/belay import ClaudeCodeAdapter, OpenCodeAdapter
 
 export piton-config Project:
     root: ./spec
@@ -21,7 +21,8 @@ belay-config Belay:
     codeRoot: .
 
     adapters:
-        - {CodexAdapter}
+        - {ClaudeCodeAdapter}
+        - {OpenCodeAdapter}
 
 piton-package FactoryPackage:
     name: factory

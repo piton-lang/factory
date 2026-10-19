@@ -1,0 +1,68 @@
+export abstract anchor FactoryEvolution:
+    reviewSchedule:
+        A project-configured scheduler in code creates a periodic review order.
+        The trigger is the later of a configured interval, defaulting to one
+        week, and a configured number of completed orders. Missed runs catch up
+        once, duplicate triggers debounce, and an idle project reviews only when
+        enough new evidence exists. The engineer may submit a review order
+        directly. A mid-tier agent executes the review as a normal order; it is
+        not a core command and not the recurring scheduler.
+    proposalRecord:
+        An enhancement proposal records its identifier, observed evidence,
+        expected benefit, estimated cost and risk, affected requirements or
+        operations, reuse case, priority, authority and budget impact, state,
+        and links to its source evidence. States are proposed, approved,
+        scheduled, completed, rejected, and superseded. The record is evidence
+        and is linked from project-owned Piton.
+    evidenceInputs:
+        The review uses completed, failed, blocked, cancelled, and escalated
+        outcomes; recurring blockers and repeated manual steps; review and
+        correction cost; routing results with model and category; and resource
+        data. Recurring means at least a configured number of occurrences in a
+        configured window with a stable deduplication key. Missing or delayed
+        usage is reported as uncertain rather than treated as zero.
+    approvalBoundary:
+        Proposals follow the enhancement approval policy. Engineer approval is
+        required unless a prior authorization explicitly covers the proposal's
+        scope, duration, and budget. Specification-change authority and
+        implementation-change authority are separate grants. An approved
+        enhancement cannot change the approval policy, budget enforcement,
+        validation gate, audit, or rollback mechanism under the same grant.
+    enhancementLifecycle:
+        Approved work is scheduled as a normal order or step with its own
+        acceptance criteria and an independent assessor. The enhancing order
+        completes under the pre-change implementation. Activation is a separate
+        step after that order terminates. The implementation records a version
+        for the changed component and exercises rollback before activation; if
+        no tested rollback exists, the change is not applied automatically.
+        A failed validation, failed acceptance, regression against existing
+        conformance, or failed rollback enters a safe blocked state and
+        escalates.
+    routingEvidence:
+        Cold start uses an engineer-approved default model order for each
+        category. A routing change needs a rolling evidence window, defaulting
+        to ninety days, with at least twenty accepted outcomes across at least
+        two models and at least five accepted outcomes per model. A configured
+        exploration share, defaulting to ten percent, routes work to a
+        non-preferred approved model so counterfactual evidence accumulates.
+        Outcome cost includes review passes and corrections.
+    categoryLifecycle:
+        Work outside the starter categories is recorded as unclassified and can
+        accumulate provisional evidence. Adding, merging, splitting, or retiring
+        a category requires engineer approval and the evidence threshold.
+        Categories with no activity for the rolling window are candidates for
+        retirement but are never removed silently.
+    modelLifecycle:
+        A new model is approved by the engineer before use, with a recorded
+        benchmark or canary plan. Provider model changes and deprecations
+        trigger re-approval or removal. Routing records the approved-model set
+        and the evidence-configuration version it used, not the billing
+        conversion table.
+    evolutionConformance:
+        Separately verdicted cells cover: scheduled review creation and debounce;
+        insufficient-evidence skip; proposal state transitions; unauthorized
+        scope rejection; pre-authorized acceptance; independent assessment;
+        rollback success, failure, and safe block; cold start; exploration
+        quota; threshold with per-model minimums; category addition, merge, and
+        retirement; and model re-approval. Each cell records evidence and an
+        observed outcome.

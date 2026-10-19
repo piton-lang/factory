@@ -1,0 +1,60 @@
+export abstract anchor FactoryEvidence:
+    artifactStore:
+        Artifacts live outside the specification in a project-configured store
+        with encryption at rest and an explicit reader authorization model.
+        The store issues immutable identifiers. Artifacts are copied on attach,
+        never referenced by mutable worktree or external URI. Every artifact
+        records a content hash and an ingestion policy version. Conformance
+        reports are write-once and may be appended only by an independent
+        verifier principal; reader and writer roles are separate.
+    requiredEvidence:
+        Required evidence includes attempt records and summaries, the commit or
+        a durable diff bundle with a pinned ref, build and test reports, review
+        verdicts, delivery receipts, and the completion manifest. Harness logs
+        and transcripts are captured when the harness supports retrieval;
+        otherwise the attempt carries the available summary and a missing
+        evidence marker. A pinned ref is protected from deletion or force
+        update, or replaced by the durable diff bundle.
+    ingestion:
+        Writes follow write, hash verify, then commit reference. A failed write
+        is retried or spooled; assessment sees evidence-pending rather than
+        silently passing. Hashes are verified before assessment and recovery. A
+        store outage is a blocker, not a completion.
+        Ingestion scans for secrets and quarantines suspect content. Externally
+        authored logs and diffs may still contain secrets. Quarantine has a
+        release or denial workflow with an approver, a false-positive path, and
+        an evidence waiver rule. Redaction happens before commit and records its
+        policy version, a marker, and the original hash. A missed secret triggers
+        a rescan, an incident, and credential rotation. Security deletion uses
+        crypto-shredding or an equivalent tamper-evident path.
+        Reader roles are engineer, scoped agent, and auditor.
+    retention:
+        Completed evidence manifests are retained indefinitely as metadata with
+        hashes. Large artifacts default to 90 days, configurable with an
+        engineer-approved floor and legal or security holds. Active and blocked
+        orders retain artifacts indefinitely. Failed orders retain until a
+        successor supersedes them or the engineer authorizes a retention
+        release. A retention release is requested as an engineer question and
+        authorized by its answer; it records an event with actor, scope, reason,
+        and time, bumps the order version, and does not change the terminal
+        state. Submitted orders are nonterminal and retain until they become
+        active or cancelled; there is no separate resolution event. Deferred
+        follow-up work pins its source evidence until it terminates.
+        Retention clocks start at completion, cancellation, supersession, or
+        retention release, in UTC. Hold authority and floor changes belong to
+        the engineer.
+    garbageCollection:
+        Garbage collection uses transactional reference counting with a grace
+        epoch. It never deletes a referenced artifact. An artifact written
+        before its reference commits is protected by an orphan TTL defaulting to
+        24 hours. Deletion uses mark, tombstone, delete, then outcome records,
+        with retry. Expired artifacts leave tombstones with identifiers and
+        hashes. Successor orders cite tombstones when content is gone.
+        Quota exhaustion never evicts live evidence.
+    manifest:
+        The completion manifest has a canonical schema, is itself an immutable
+        artifact, is hashed with SHA-256, and is frozen at completion. Audit
+        entries carry artifact identifiers only when evidence must be retained;
+        otherwise they carry hashes and metadata so retention can terminate.
+        Status reports store outages, evidence-pending states, quota, and the
+        age of the last successful write.

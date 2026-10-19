@@ -1,0 +1,51 @@
+export abstract anchor FactoryHarnesses:
+    supportedHarnesses:
+        The initial supported agent harnesses are Claude Code, Codex, and
+        OpenCode. Each integration must accommodate API-backed and subscription
+        accounts. The mapping of accounts and models to harnesses remains
+        project configuration.
+    commonAdapterContract:
+        A common harness adapter contract isolates factory code from
+        harness-specific behavior. Every integration provides the same
+        operations behind it, while agents write and repair the
+        environment-specific wiring that connects each harness. Factory code
+        depends on the contract, not on one harness. Each adapter declares
+        token, launch-request lookup, reference-only, or unsupported discovery.
+    capabilityMinimums:
+        A supported adapter must launch with a factory-generated attempt and
+        launch request identifier that the harness retains or echoes, return a
+        durable session reference, reconnect or report status for a known
+        session, provide positive terminal evidence, cancel a session, and
+        report usage when the harness exposes it. Capabilities are declared per
+        harness and per account kind. An adapter that cannot launch, reconnect,
+        report terminal evidence, or cancel is not supported for restart-
+        recoverable work.
+    evidenceMatrix:
+        Each adapter declares its terminal evidence kinds, the precedence among
+        sources, per-source freshness windows, and the mapping from terminal
+        evidence to attempt outcome. Conformance checks the declared matrix
+        against observed signals. Usage absence is a budget-unknown mode that
+        requires engineer acceptance, records conservative exposure, and cannot
+        claim a hard cap.
+    adapterIdentityAndLease:
+        The harness retains or echoes the attempt and launch request
+        identifier. A session lease is claimed by exactly one session identity
+        at adoption, and a second launch under a claimed lease is refused.
+        Each session has a separate worktree and a per-session stop handle.
+    requiredGuarantees:
+        - launch a session for an assignment
+        - resume or reconnect to a surviving session
+        - observe liveness without mistaking a client disconnect for the end
+        - request and confirm cancellation
+        - report usage and allowance when the harness exposes it
+    preservedReferences:
+        Integrations preserve the session references needed to reconnect after
+        a factory restart, so recovery does not launch duplicates. A missing or
+        stale reference stays uncertain unless the integration can establish
+        that the session ended.
+    unresolvedHarnessDetails:
+        The contract above is required. Per-harness implementation details
+        remain: which exact signals are available, how the attempt token is
+        injected, and how usage and artifacts are read. An adapter that cannot
+        support a guarantee declares that capability unsupported, and the
+        factory must not claim it.

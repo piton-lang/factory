@@ -1,0 +1,42 @@
+export abstract anchor FactoryQuestions:
+    questions:
+        Questions are open, answered, withdrawn, or closed. Answers are
+        current, superseded, or rejected. A question records its order, asker,
+        decision key, generation, and blocking scope. The scope is a set of seed
+        steps plus all transitive dependents, recomputed whenever the plan
+        changes. Questions are same-order only; cross-order effects use a
+        successor order.
+        An answer presents the expected generation. A mismatch returns a
+        conflict and applies nothing. An identical answer is a no-op. Different
+        answers for one generation are rejected as a conflict and the engineer
+        confirms. A new answer to an answered question creates a new generation,
+        supersedes the old answer, and triggers revalidation. Rejected answers
+        remain in the audit.
+        Withdrawal requires the engineer or an explicit delegate, except a
+        verified moot question whose scoped steps are all terminal. A withdrawn
+        question reopens only as a new generation. Only the engineer or an
+        explicit delegate answers. Agent help requests are a separate operation.
+        Before completion every open question is answered, withdrawn, or carried
+        into a named successor. After completion new questions require a
+        successor order. Duplicate questions share a decision key; the newest
+        open question is active and the rest are linked.
+    changedAnswers:
+        Briefs and results record the question generations and assumption
+        records they rely on. An assumption records its statement, provenance,
+        scope, owner, and state.
+        A changed answer traces the recorded assumptions and dependency edges
+        that consumed an earlier generation, including transitive dependents,
+        and records examined but unaffected results as negative evidence. A
+        revalidation is bound to the answer generation and states the result
+        revision it examined. It presents the order aggregate version and is
+        checked against the latest generation before commit; an older-generation
+        decision is superseded. Revalidations are idempotent by request
+        identifier.
+        Results that still satisfy the answer are kept with an explicit record.
+        The rest are superseded, outputs preserved, and replacements planned by
+        an authorized agent. Running work under the old generation is paused or
+        superseded and its outputs preserved. An active order is corrected in
+        place; a completed order gets a successor order carrying the evidence.
+        An answer that changes intent is confirmed by the engineer or an
+        explicitly delegated order owner. Criteria are re-frozen before
+        replacement work, and a fresh independent assessor applies them.

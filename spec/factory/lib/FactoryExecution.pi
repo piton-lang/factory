@@ -1,0 +1,122 @@
+export abstract anchor FactoryExecution:
+    retries:
+        Retry policy applies to step attempts, project-wide by default, with
+        order or step overrides inside engineer policy. The default is three
+        retries after the first attempt, four attempts total, configurable from
+        zero to ten per attempt chain. Job and delivery retries are nested and
+        counted separately, and total spend is visible.
+        Only confirmed terminal failures count: a session confirmed ended, a
+        confirmed worker loss, a non-allowance rate-limit refusal, or an
+        idempotent launch failure. A factory-side timeout or lost response is
+        in-doubt and goes to discovery. An exhausted allowance is a budget
+        blocker and consumes no retry.
+        An exhausted allowance before an attempt starts creates no attempt and
+        leaves the step ready with a budget blocker. During an attempt it pauses
+        dispatch on that route and the adapter requests a graceful stop. A
+        confirmed stop makes the attempt interrupted without counting a retry
+        and returns the step to ready or blocked until budget or allowance is
+        restored. An unconfirmed stop follows unknown-liveness rules. A 429 with
+        stale or missing allowance data is treated as throttling with an
+        immediate refresh; repeated unexplained refusals escalate.
+        Classification is code-owned; adapters report evidence and declared
+        class. Attempts store class, evidence, and retry-counted flag. Every
+        retry path, including job, delivery, and launch, passes the same
+        effect-class gate; the effect key is stable per operation target, not
+        per attempt. An at-most-once or lookup-gated result never retries beyond
+        what its class permits.
+        Backoff is 30 seconds, 2 minutes, 8 minutes, then capped at 10 minutes,
+        with 20 percent clamped jitter. A provider Retry-After takes precedence
+        even above the cap. Deadlines persist across restart. A backing-off step
+        is not ready, reports retry backoff, and holds no capacity slot or next
+        reservation until admission.
+        Circuit breakers are scoped to account, harness, and model route. Three
+        consecutive transient failures within 10 minutes trip a breaker;
+        cooldown is 5 minutes, then a half-open probe. Open routes are skipped;
+        all routes open is a blocker. Route switching obeys budget admission and
+        the paid-fallback decision.
+        Replanning is capped at two authorized replans per order or incident
+        before engineer approval. It supersedes the old step, migrates edges,
+        and creates a fresh chain only through the recorded revision.
+        Retries reuse the worktree unless an authorized revision resets it, and
+        partial writes are preserved. Retry admission uses the priority-aware
+        budget path.
+    failedAttempts:
+        The factory allows limited automatic retries for confirmed transient
+        execution failures, such as a confirmed worker loss or a non-allowance
+        rate-limit refusal. An exhausted allowance is a budget blocker and does
+        not consume a retry. A lost response or unknown liveness is in-doubt and
+        follows discovery rather than retry. Retry limits are configurable.
+        Problems with the work itself become help requests through the defined
+        escalation path. Failures that exhaust automatic retries also enter the
+        defined escalation path.
+    priority:
+        Priority is an integer from 0 to 100, default 50, higher wins. Named
+        defaults are critical 90, high 75, normal 50, and low 25. Steps inherit
+        order priority. A planner may lower a step or keep it equal; a step
+        cannot outrank its order. Raising above the order requires an order
+        revision. Overrides record a reason.
+        Dispatch chooses the highest-priority ready and eligible step.
+        Eligibility means dependencies satisfied, budget and account allowance
+        reserved, and a concurrency slot available. Build and test capacity is
+        not part of step eligibility. Ties favor a step with a prior attempt,
+        then persisted ready time, then older order by submission time, then
+        step identifier. Ready time resets when a step becomes unready and ready
+        again.
+        Running work and running jobs are never preempted and retain start-time
+        priority. Priority changes affect queued work immediately. Reservations
+        are taken at dispatch, not enqueue. Step admission is atomic across
+        budget, account allowance, and concurrency slot, keyed by route. Build
+        and test capacity units are admitted at job admission, which commits a
+        job-level sub-reservation atomically from the owning step's budget
+        reservation and its capacity lease. A step does not reserve build
+        capacity before it has a job. A high-priority step may bypass queued
+        lower-priority work but never a committed live attempt.
+    jobs:
+        A job record carries identifier, kind, serving step, wiring version,
+        inputs, required capacity units, priority, state, attempts, timeout,
+        cache key, artifacts, logs, result, and timestamps. States are queued,
+        running, succeeded, failed, timed_out, cancelled, unknown, and orphaned.
+        Admission commits intent, idempotency key, job-level budget
+        sub-reservation, capacity lease, and pool selection atomically before
+        external dispatch. A lease records pool, units, owner, and fencing
+        epoch. Workers heartbeat; an expired lease moves the job to unknown, not
+        failed. Recovery reconciles leases and jobs before dispatch.
+        If job admission is refused, no external effect occurs. The job remains
+        queued with a job-capacity or job-budget blocker; the step stays running
+        and holds its concurrency slot and budget reservation until the job is
+        admitted or the step is cancelled. A job whose required units exceed
+        every pool maximum is unsatisfiable and escalates. A large high-priority
+        job may be bypassed by smaller work; priority-inversion reporting is the
+        mitigation and no unit reservation is pre-taken.
+        Workers and pools declare kinds, capacity units, labels, and
+        availability, including draining and offline. Units are additive per
+        pool and exclusive to a job; multi-worker jobs declare units per worker.
+        The queue orders by priority then ready time and scans past jobs that do
+        not fit. Running jobs retain start-time priority.
+        Cache keys include commit, command, environment hash, toolchain or image
+        digest, dependency lock, test selection, wiring version, and assumption
+        generations. Entries are reused only when the wiring check is valid and
+        provenance hashes verify. Default lifetime is 7 days. Cross-order reuse
+        requires explicit policy. Coalescing shares a job only within allowed
+        scope, and cancelling one consumer does not cancel a shared job unless no
+        consumers remain.
+        Job retries default to one retry after the first attempt, separate from
+        step retries. Infrastructure or worker failure is retryable; a failing
+        test is a result; a test timeout is a result unless the executor
+        confirms infrastructure failure. Attempts carry parent links and
+        retry-counted flags.
+        One executor contract covers local and remote: launch, status, cancel,
+        lookup by idempotency key, artifact and log retrieval, and usage. Local
+        execution uses the same contract. Exit codes map to succeeded, failed,
+        or infrastructure failure, and wrappers cannot hide infrastructure
+        failures. Cancellation follows the cancellation rules; capacity is
+        released only after worker confirmation. A cancelled job preserves logs
+        and partial artifacts.
+    jobRecovery:
+        A committed capacity lease survives a crash between admission and
+        dispatch. Recovery reconciles admitted-unlaunched, launch-in-gap,
+        lease-expired, succeeded-uncommitted, and orphaned jobs before new
+        dispatch. A late worker result is accepted only when its fencing epoch
+        is current; an older epoch is recorded as orphaned. Unknown jobs have a
+        configurable resolution deadline, after which capacity is released, the
+        reservation stays a floor, and the incident escalates.

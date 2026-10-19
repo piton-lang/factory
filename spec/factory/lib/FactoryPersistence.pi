@@ -1,0 +1,45 @@
+export abstract anchor FactoryPersistence:
+    durability:
+        The store supports atomic multi-record commit and durable
+        acknowledgement. A crash never loses an acknowledged commit and never
+        exposes a partial one. External effects use intent and outcome records:
+        one transaction commits intent, request identifier, and reserved version
+        before any launch, build, delivery, or worktree effect. Acknowledgement
+        covers that commit; the outcome is a second committed operation. An
+        in-doubt effect is reconciled by request identifier and effect-class
+        discovery, never blindly retried.
+    concurrency:
+        Each order has an aggregate version. Every mutation presents it; a
+        mismatch returns a conflict and applies nothing. The commit set includes
+        every record the operation changes and every attempt, result,
+        reservation, queue entry, edge, lease, or session reference that must
+        change atomically. First-accepted-result selection is an atomic
+        compare-and-swap.
+        Only one factory process writes at a time, protected by a
+        single-instance writer lock covering budget, capacity, admission, and
+        all command surfaces. Locks are never held across an external call.
+        Multiple readers are allowed. Conflict retries use bounded backoff.
+    idempotency:
+        Request identifiers are scoped factory-wide. A uniqueness claim is
+        inserted before execution so concurrent duplicates cannot both run. The
+        record stores actor, target, and a canonical payload fingerprint; a
+        reused identifier with different intent is rejected. A duplicate while
+        the original is in flight returns in-progress or waits up to the claim
+        lease. Stored responses, including rejections and conflicts, replay
+        identically.
+        A claim has a lease and epoch with adopt, complete, or abandon
+        recovery. Idempotency and audit tombstones are retained past target
+        record purge so a late retry cannot reapply a destructive action.
+    startupValidation:
+        Startup acquires the writer lock and validates records, plans,
+        surviving sessions, overlap leases, reservations, capacity slots,
+        in-flight deliveries, worktrees, idempotency claims, and queue entries
+        before accepting operations. Global inconsistencies stop dispatch
+        factory-wide in read-only mode and escalate. Order-local failures pause
+        only that order. Reconciliation completes before operations resume.
+    storeSchema:
+        The store has a schemaVersion, migrations, and forward-compatibility
+        rules. Status and dashboard read a committed snapshot with a bounded
+        staleness defaulting to five seconds and never block writers. Degraded
+        mode when the store is unavailable stops new dispatch, keeps running
+        attempts, spools bounded outcomes, and marks usage unknown.

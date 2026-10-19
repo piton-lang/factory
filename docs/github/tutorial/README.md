@@ -1,0 +1,77 @@
+<!-- Generated from docs/src/content/docs. Do not edit directly. -->
+
+# Getting started tutorial
+
+*Build and run a working project factory, one step at a time.*
+
+This tutorial takes you from an empty project to a factory that can accept one
+small order, show what it is doing, ask you a question, deliver the result, shut
+down, resume, and pass a conformance check.
+
+It is intentionally hand-held. Each lesson ends with a checkpoint. Do not skip
+a checkpoint; the next lesson assumes it passed.
+
+## What you will build
+
+A project-owned factory with:
+
+- a valid `.factory/project.json`;
+- all six core commands;
+- a minimal dashboard;
+- an approved operating policy;
+- one small order delivered with receipts;
+- a shutdown and resume that preserve work;
+- an admissible conformance report.
+
+## What you need
+
+- a project in git;
+- the Piton CLI;
+- an AI coding agent such as Claude Code, Codex, or OpenCode;
+- at least one agent account or subscription;
+- a delivery destination: a branch, pull request, environment, or package.
+
+## Time
+
+Plan for 30–60 minutes, plus time to install Piton or create accounts. The first
+onboarding often takes longer because you are deciding budgets and limits.
+
+## How to use this tutorial
+
+Do the lessons in order:
+
+1. [Install Piton](./01-install-piton.md)
+2. [Add the factory package](./02-add-factory.md)
+3. [Scaffold the factory](./03-scaffold.md)
+4. [Onboard](./04-onboard.md)
+5. [Submit your first order](./05-first-order.md)
+6. [Answer and deliver](./06-answer-deliver.md)
+7. [Shut down and verify](./07-shutdown-verify.md)
+
+If you get stuck, each lesson has a short “if it fails” section. The
+[troubleshooting section in the setup guide](../start/setup.md#common-problems) has
+more detail.
+
+## A note about commands
+
+The tutorial uses `factory` as the command. Your project may use a different
+invocation. The real command is always in `.factory/project.json` under
+`invocation`.
+
+## A note about agents
+
+The tutorial asks your coding agent to use packaged skills by name. If your
+agent lists skills differently, search for “factory” in its skill list. The
+skill names are stable:
+
+- `factory-0010-scaffold`
+- `factory-0010-onboard`
+- `factory-0010-start`
+- `factory-0010-shutdown`
+- `factory-0010-verify`
+
+You can always type the plain-language request shown in the lesson instead.
+
+---
+
+[Repository README](../../../README.md) · [Documentation home](../README.md) · [1. Install Piton →](./01-install-piton.md)

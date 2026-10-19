@@ -18,10 +18,18 @@ export abstract anchor FactorySkillBase extends Skill:
         differences. A diff exit status of 1 means differences, not failure;
         distinguish it from an actual diff error.
     operatingBoundary:
-        Discover the project's actual factory operations and approved policy;
-        do not invent commands, schemas, model identifiers, or defaults for
-        unresolved decisions. Agents change plans, dependencies, and task
-        records through defined factory operations, not internal state edits.
+        Discover the project's factory descriptor and approved policy. Use its
+        recorded invocation with the fixed standard subcommands for onboarding,
+        start, submission, status, answers, and shutdown; the outer executable
+        and technology are project choices. Do not invent schemas, model
+        identifiers, or defaults for unresolved decisions. The dashboard is an
+        alternative surface for monitoring and the same core actions, not
+        separate authority. Agents change plans, dependencies, and task records
+        through the defined semantic operations, not internal state edits.
+        Those operations also carry cancellation, heartbeat, and progress
+        reporting within the project's authority rules. Use the standard
+        operation envelope and act only within your actor scope.
+
         Reuse request identifiers when retrying an operation after an unknown
         response. If a needed operation is absent, describe that gap and use
         the enhancement policy rather than bypassing validation.

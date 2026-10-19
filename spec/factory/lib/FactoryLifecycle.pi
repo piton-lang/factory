@@ -1,0 +1,72 @@
+export abstract anchor FactoryLifecycle:
+    orderStates:
+        Orders are submitted, active, blocked, completed, failed, or
+        cancelled. They also carry a phase: planning, executing, integrating,
+        delivering, or assessing. State precedence is cancelled, failed,
+        completed, blocked, active, then submitted. An order is active while the
+        factory can make progress; it is blocked when progress needs an external
+        decision or resource. Phase precedence is assessing, delivering,
+        integrating, executing, then planning. Phase is null for submitted and
+        terminal orders.
+    stepStates:
+        Steps are pending, ready, running, paused, blocked, completed, failed,
+        cancelled, superseded, or deferred. Running covers an active attempt or
+        a completed attempt awaiting assessment. A step becomes cancelled or
+        superseded only after its attempt is terminal; until then it stays
+        running with a cancelling blocker. A failed, cancelled, or superseded
+        prerequisite moves dependents to blocked with a dependency cause. Every
+        step records whether it is required; excluding a required step needs an
+        authorized scope record.
+    attemptStates:
+        Attempts are intent, launching, running, completed, failed,
+        interrupted, unresolved, cancelled, or orphaned. Unresolved means the
+        external effect may or may not have happened. It is terminal for its
+        record, reserves the effect key, and blocks any replacement for that
+        step until the engineer confirms no effect or authorizes replacement.
+        Orphaned is terminal. Session liveness is separate from attempt
+        outcome. Only one active attempt may exist for a step; an unresolved
+        attempt still counts as active for its effect key. Unresolved never
+        returns to running. It transitions to interrupted on positive terminal
+        evidence or a confirmed stop, to failed when the engineer confirms no
+        effect, and to orphaned only when the engineer authorizes a replacement.
+        Each attempt records its number and parent, launch request identifier,
+        effect key, session references, start and end times, end cause,
+        retry-counted flag, evidence, and worktree when it writes files. A step
+        whose attempt is
+        unresolved is blocked with an unresolved cause, and its dependents are
+        blocked.
+    cancellation:
+        Cancellation causes are supersession, budget, policy, engineer
+        replacement, and higher-tier cancellation. Supersession requires a
+        committed authorized revision. Each cause names who may request it and
+        who may set the grace period within configured bounds.
+        A request records its identifier, target, cause, authority, actor,
+        reason, request time, grace, and state. States are requested, confirmed,
+        failed, and unconfirmed. A failed stop leaves the attempt running and
+        escalates. At expiry without confirmation the state is unconfirmed.
+        A cancellation fence commits with the step and attempt version and
+        blocks new launches and retry timers for the attempt chain. Cancellation
+        during launching resolves through the launch request identifier and
+        discovery, and releases capacity only after the launch outcome or
+        orphan resolution. Job capacity is released only after worker
+        confirmation.
+        A confirmed stop makes the attempt cancelled and the step cancelled or
+        superseded. Preservation runs before cleanup and records artifact
+        identifiers, a pinned commit or durable diff bundle with hash, untracked
+        files, and the evidence manifest. Unmerged cancelled work is retained
+        until a successor supersedes it or the engineer authorizes a retention
+        release.
+        An unconfirmed stop at expiry makes the attempt unresolved rather than
+        interrupted. A later confirmed stop transitions unresolved to
+        interrupted with an audited record. Late confirmation is evidence only;
+        the first terminal transition wins and reconciliation runs once.
+        Cancellation is idempotent; a conflicting second request is validated
+        and recorded.
+    cancellationAuthority:
+        Code cancels work for supersession, budget, or policy. A higher-tier
+        agent may cancel lower-tier work. An agent may not unilaterally cancel
+        its own step; it reports blocked or failed and asks upward. The engineer
+        cancels by explicitly replacing the approach. The harness adapter
+        requests a graceful stop and confirms it. Outputs are preserved. An
+        unconfirmed stop is marked unresolved rather than complete, and its
+        session reference stays available with uncertain liveness for recovery.

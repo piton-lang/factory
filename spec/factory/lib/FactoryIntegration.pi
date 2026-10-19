@@ -1,0 +1,124 @@
+export abstract anchor FactoryIntegration:
+    deliveryTargets:
+        A target record carries an identifier, kind, destination, baseline and
+        current revision, state, required checks, receipt, lease, and fencing
+        epoch. The delivery unit is the order-target pair. A target may be
+        explicitly none, recorded with its authorizer at planning time.
+        Required targets are frozen when the order is planned; changing them
+        needs an engineer-approved order revision.
+    deliveryDestination:
+        The order's prompt determines where completed work is delivered, such
+        as an integrated branch, a pull request, or the main branch. Asking for
+        a delivery default during onboarding is the preferred direction; the
+        exact default and fallback behavior remain unresolved.
+    integrationCandidates:
+        Each target has one integration queue and one target lease with a
+        fencing epoch. A candidate is assembled and checked before completion
+        assessment. Candidates are ordered by dependency, then order priority,
+        then readiness time.
+        The integrator re-applies the candidate onto the current target revision
+        together with its recorded prerequisite revisions, runs the target's
+        required checks on the combined result, and records the exact candidate
+        revision. A revision mismatch re-applies and rechecks. Assessment binds
+        to that exact revision; if the candidate must change after assessment,
+        it is reassessed before delivery.
+        Git targets update by compare-and-swap on the target revision. Non-git
+        targets use an adapter with intent, outcome, and read-back; unchanged
+        means the read-back matches the baseline. A merger resolution creates a
+        new candidate revision, and every affected order's assessor revalidates
+        it. If assessors disagree on the same integrated revision, the target
+        enters a blocked split state until an authorized decision resolves it.
+    targetLeaseLifecycle:
+        A target lease records target, holder, epoch, acquisition, expiry,
+        state, and the queue head it covers. It is durable ownership, not a lock
+        held across an external call. Acquisition is atomic with queue-head
+        selection. A multi-target order acquires and releases one target lease
+        per target effect in sorted target order; it never holds several target
+        leases at once. No worktree or capacity lease is held while acquiring a
+        target.
+        Renewal uses a heartbeat and TTL. Long checks renew or release and
+        reacquire. Check results and assessments are epoch-bound; if the epoch
+        advances, the result is discarded and rerun. An in-doubt delivery holds
+        the lease and epoch and is never re-fenced while undisposed. Its
+        disposition deadline is a separate clock from the TTL: at expiry the
+        target stays blocked, the lease stays held, and escalation continues
+        until an engineer disposition or an authorized forced disposition.
+        The epoch gates dispatch, intent commit, and receipt binding. Git
+        targets use revision compare-and-swap. A non-git target declares its
+        version token, where the token is enforced, whether read returns it,
+        where the idempotency key is recorded, and the exact proof of applied
+        or not-applied. A read-back-only target that cannot prove the outcome is
+        unresolved. A multi-object mismatch is partial and holds the lease until
+        compensation or disposition.
+    leaseConformance:
+        Cells pair a positive control with a fault: acquire, renew, and release;
+        a live stale holder with the same lease identity and older epoch
+        attempting publication after expiry is rejected while a current-epoch
+        control succeeds; renewal extends validity past the original expiry;
+        crash after acquisition, during checks, and before any effect recovers
+        at expiry with zero effects; non-git CAS unsupported yields unresolved
+        while a supported-CAS control succeeds; disjoint resources with
+        overlapping intervals run concurrently; intersecting resources
+        serialize; a mid-run key addition releases and reacquires without
+        deadlock; both sorted acquisition orders are exercised; an orphan
+        worktree stays isolated; a fenced writer cannot corrupt the preservation
+        snapshot; and cleanup releases after preservation. Each cell records
+        lease identity, state, epoch, key set, target revision, CAS token or
+        read-back outcome, receipt binding, effect counts, and release order. A
+        cell that never reaches its condition is not passed.
+    deliveryOutcomes:
+        Outcomes are pending, running, succeeded, partial, failed, unresolved,
+        or unnecessary. The idempotency key is the order, target, and canonical
+        integrated revision. A receipt proves one attempt at that revision and
+        records the target revision, external identifier, effect count, checks,
+        and actor.
+        Retries read back the target and never repeat a confirmed effect. An
+        in-doubt effect becomes unresolved and holds the target delivery lease
+        and epoch until disposition: applied adopts or reconstructs the receipt,
+        not-applied releases and retries, unknown requires engineer-authorized
+        replacement.
+    partialDelivery:
+        Partial delivery is nonterminal. It records the remainder. An
+        engineer-approved scope reduction creates a follow-up order in a
+        non-running state, acquires the target lease and epoch, and then
+        activates. The original order's target retries are suppressed by the
+        same revision. A crash between steps leaves the follow-up inert and the
+        original claim held. After an approved reduction the removed target is
+        no longer required, so the original order may complete without it.
+        Required-target failure before reduction never completes the order.
+    compensation:
+        A target or effect declares whether it is reversible and names its
+        compensator. The declaration is approved above the implementer; an agent
+        cannot declare its own effect reversible. Compensation runs only after
+        the original effect is resolved, holds the target lease, is effect-keyed,
+        idempotent, and reverse-ordered across multiple targets. Its outcomes are
+        succeeded, failed, partial, or unresolved. Partial compensation becomes
+        unresolved. Compensation records whether it invalidates the receipt and
+        whether a successor order is required.
+    deliveryRoles:
+        A delivery owner coordinates targets, receipts, and retries. A merger
+        resolves integration conflicts. An integrator assembles combined
+        candidates and runs combined checks. An independent assessor accepts the
+        result and is distinct from every required implementer, the delivery
+        owner, the merger, and the integrator.
+    finalAcceptance:
+        Final acceptance is a recorded operation with an actor, assessor
+        identity, checked revision, and receipt set. It requires successful
+        receipts for every required target, passing combined checks, and the
+        completion assessment. The assessor may refuse acceptance; a refused
+        acceptance after a successful external effect blocks the order and
+        requires compensation or a successor order. The top-tier implementer
+        case uses the engineer or a fresh independent reviewer with recorded
+        authority; if neither exists, acceptance stays blocked.
+    deliveryMatrix:
+        Conformance cells are typed by target kind, fault, and outcome, with a
+        mandatory setup and injection, a path-reached assertion, an expected
+        pre- and post-target state, exact effect counts inside a quiescence
+        window, and a receipt check. Cells cover an unmerged prerequisite
+        integrated once; two concurrent candidates with a conflict and a
+        reassessed revision; combined checks failing with the target unchanged;
+        a target unavailable then succeeding; partial delivery with an approved
+        reduction and follow-up; a duplicate retry with exactly one effect; an
+        in-doubt delivery resolved by lookup; reversible compensation and an
+        irreversible refusal; cleanup after receipts; and an explicitly none
+        target. A cell that never reaches its path is not passed.

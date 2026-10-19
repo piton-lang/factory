@@ -1,0 +1,84 @@
+from ./Factory import Factory
+
+export anchor FactoryGuide:
+    howToRead:
+        Read this specification as a sequence rather than as one flat list of
+        requirements. Follow a link only when the work touches what it
+        describes. The order below moves from why a project owns its factory,
+        through how work is organized and executed, to delivery, capacity,
+        surfaces, and the guarantees that hold them together.
+    readingOrder:
+        - @{Factory.referenceImplementation}
+        - @{Factory.adoptionMapping}
+        - @{Factory.adoptionConformance}
+        - @{Factory.projectSpecificRealization}
+        - @{Factory.incrementalAdoptionAndEvolution}
+        - @{Factory.reviewSchedule}
+        - @{Factory.proposalRecord}
+        - @{Factory.approvalBoundary}
+        - @{Factory.routingEvidence}
+        - @{Factory.states}
+        - @{Factory.factModel}
+        - @{Factory.freshness}
+        - @{Factory.healthScopes}
+        - @{Factory.readAccess}
+        - @{Factory.actionSet}
+        - @{Factory.authorizationMatrix}
+        - @{Factory.actorIdentity}
+        - @{Factory.auditIntegrity}
+        - @{Factory.decisionSet}
+        - @{Factory.credentialBoundary}
+        - @{Factory.configurationChanges}
+        - @{Factory.orchestration}
+        - @{Factory.planningAndExecution}
+        - @{Factory.dependencies}
+        - @{Factory.orderStates}
+        - @{Factory.questions}
+        - @{Factory.liveness}
+        - @{Factory.harnessRecoveryMatrix}
+        - @{Factory.retries}
+        - @{Factory.priority}
+        - @{Factory.jobs}
+        - @{Factory.completionAssessment}
+        - @{Factory.delivery}
+        - @{Factory.deliveryTargets}
+        - @{Factory.targetLeaseLifecycle}
+        - @{Factory.overlapLeaseLifecycle}
+        - @{Factory.leaseConformance}
+        - @{Factory.integrationCandidates}
+        - @{Factory.deliveryOutcomes}
+        - @{Factory.partialDelivery}
+        - @{Factory.deliveryMatrix}
+        - @{Factory.workspaceIsolation}
+        - @{Factory.budgetReservation}
+        - @{Factory.accountingModel}
+        - @{Factory.usageAttribution}
+        - @{Factory.throttlingClassification}
+        - @{Factory.adaptiveModelSelection}
+        - @{Factory.standardSurface}
+        - @{Factory.descriptorSchema}
+        - @{Factory.conformanceScenarios}
+        - @{Factory.conformanceReport}
+        - @{Factory.conformanceIndependence}
+        - @{Factory.conformanceVerdicts}
+        - @{Factory.verifierIdentity}
+        - @{Factory.reportAdmissibility}
+        - @{Factory.verificationConformance}
+        - @{Factory.budgetConformance}
+        - @{Factory.durability}
+        - @{Factory.recoveryInventory}
+        - @{Factory.unresolvedRecovery}
+        - @{Factory.retryRecovery}
+        - @{Factory.recoveryMatrix}
+        - @{Factory.artifactStore}
+        - @{Factory.wiringKey}
+    narrative:
+        The first links explain why consuming projects own their factory and
+        how it grows without a shared service. The plan, lifecycle, and
+        execution links describe how an order becomes work and how that work
+        survives failure. Delivery and workspace links describe how results
+        become accepted changes. Capacity and routing links describe how the
+        factory spends its available agents and money. Tooling and conformance
+        links describe how an engineer and a verifying agent operate and trust
+        the result. Persistence, evidence, and wiring links describe the
+        guarantees underneath every other section.

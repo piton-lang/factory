@@ -1,0 +1,49 @@
+export abstract anchor FactoryDescriptor:
+    commandInvocation:
+        Subcommand names in the standard surface are fixed. Each project has a
+        descriptor at `.factory/project.json`, generated during onboarding or
+        scaffolding, that records how the factory is invoked. Packaged skills
+        and engineers read the descriptor before operating the factory. The
+        outer executable name, packaging, and technology remain project choices.
+        The invocation array has at least one element. argv[0] is invocation[0];
+        invocation[1..] are fixed arguments. The standard subcommand is appended
+        immediately after the invocation array, and the subcommand's own
+        arguments follow it. No global option is inserted between them. cwd
+        applies to the invocation and every subcommand.
+    descriptorSchema:
+        The descriptor is UTF-8 JSON with a schemaVersion. The current version
+        is 1 and the supported maximum is 1. Required fields are schemaVersion,
+        invocation as an array of one or more non-empty strings, config as a
+        project-relative path, specVersion as an immutable full commit SHA or
+        exact tag, and builtAgainstSpecVersion as the immutable implementation
+        baseline. An empty invocation fails validation.
+        Optional fields are cwd, an environment map of string values, dashboard
+        as an http or https URL, capabilities as an array of focus or optimize,
+        implementationVersion, name, and configDigest as a SHA-256 digest of
+        the loaded configuration. An empty capabilities array means none are
+        declared.
+        Unknown fields are preserved on rewrite and ignored by readers. An
+        unsupported newer schemaVersion is a clear error. A missing or invalid
+        required field is an error. Writes are atomic and serialized by the
+        project lock.
+    descriptorPaths:
+        The project root is the parent of `.factory`. Descriptor discovery
+        searches upward from the working directory and refuses when multiple
+        descriptors are found. Config and relative invocation paths resolve from
+        the root. Absolute paths, parent traversal, and symlinks escaping the
+        root after canonicalization are rejected. cwd is containment-checked.
+        invocation[0] and relative fixed arguments resolve from the root before
+        cwd applies. cwd defaults to the project root and never changes argument
+        resolution or descriptor discovery. argv[0] resolves through PATH unless
+        it contains a path separator, in which case it resolves from the root.
+        PATH comes from the process environment and cannot be overridden by the
+        descriptor or wiring. Descriptor environment overlays the process
+        environment for non-PATH keys; later entries override earlier ones.
+    descriptorMigration:
+        Schema changes increment schemaVersion. Older unsupported versions are
+        refused with an explicit upgrade path that is versioned, backed up,
+        idempotent, and preserves unknown fields. Newer versions are refused.
+        Validation checks types, containment, invocation executability without
+        executing it, config existence, capability names for the schema version,
+        and that specVersion resolves against the tether lock. Secrets are
+        rejected in the environment map by key pattern as a best effort.

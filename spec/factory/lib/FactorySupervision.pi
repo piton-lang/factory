@@ -1,0 +1,37 @@
+export abstract anchor FactorySupervision:
+    stallMonitor:
+        A code-level monitor detects a running attempt with no harness
+        activity, heartbeat, or artifact change for a configurable interval; a
+        ready and eligible step undispatched for a configurable interval; and
+        an active order with no step or phase change. Heartbeats are optional;
+        a missing heartbeat is unknown, not a stall. Eligibility means ready,
+        dependencies satisfied, wiring valid, model and account available, and
+        a concurrency slot and budget admission available. Build capacity is
+        checked at job admission. Capacity and budget deficits are separate
+        blockers.
+        Defaults are a 30 second heartbeat, a 10 minute activity stall, a 5
+        minute undispatched queue, and a 10 minute priority inversion. Incidents
+        persist across restarts, use debounce and hysteresis, and are suppressed
+        during startup reconciliation and graceful shutdown.
+    blockerReasons:
+        Components write structured blocker reasons: engineer question, help,
+        plan merge, dependency, unknown liveness, wiring or authentication,
+        capacity, budget, integration, delivery, artifact retrieval, no eligible
+        model or account, retry backoff, and unconfirmed cancellation. The
+        monitor reads these reasons rather than inferring them.
+    escalationRouting:
+        Escalation is cause-routed. Plan and dependency incidents go to the
+        plan owner, then a smarter tier, then the engineer. Wiring incidents go
+        to the repair agent. Capacity and budget incidents go to the resource
+        controller, then the engineer. Liveness incidents go to harness
+        investigation. Delivery incidents go to the delivery owner. One
+        incident escalates once per level and is deduplicated by target, cause,
+        and generation. Stall handling never cancels; cancellation authority is
+        separate.
+    priorityInversion:
+        Priority inversion means a higher-priority step waits while
+        lower-priority work is newly or repeatedly dispatched, while
+        lower-priority running work holds the needed capacity, or while
+        capacity sits idle for the higher-priority step. It is reported with
+        wait duration measured from readiness. Indefinite waiting is allowed and
+        no automatic aging applies; the engineer may reprioritize.

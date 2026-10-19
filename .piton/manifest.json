@@ -1,26 +1,30 @@
 {
   "generated": [
-    ".agents/skills/crux-arch-dependencies/SKILL.md",
-    ".agents/skills/crux-arch-explore/SKILL.md",
-    ".agents/skills/crux-arch-interfaces/SKILL.md",
-    ".agents/skills/crux-arch-risks/SKILL.md",
-    ".agents/skills/crux-arch-tradeoffs/SKILL.md",
-    ".agents/skills/crux-impl-reconcile/SKILL.md",
-    ".agents/skills/crux-project-bootstrap/SKILL.md",
-    ".agents/skills/crux-spec-coverage/SKILL.md",
-    ".agents/skills/crux-spec-deep-dive/SKILL.md",
-    ".agents/skills/crux-spec-develop/SKILL.md",
-    ".agents/skills/crux-spec-impact/SKILL.md",
-    ".agents/skills/crux-spec-refactor/SKILL.md",
-    ".agents/skills/crux-spec-review/SKILL.md",
-    ".agents/skills/factory-0010-focus-on/SKILL.md",
-    ".agents/skills/factory-0010-onboard/SKILL.md",
-    ".agents/skills/factory-0010-optimize/SKILL.md",
-    ".agents/skills/factory-0010-shutdown/SKILL.md",
-    ".agents/skills/factory-0010-start/SKILL.md",
-    ".codex/reference/factory/Factory.md"
+    ".claude/reference/factory/Factory.md",
+    ".claude/reference/factory/FactoryGuide.md",
+    ".claude/skills/crux-arch-dependencies/SKILL.md",
+    ".claude/skills/crux-arch-explore/SKILL.md",
+    ".claude/skills/crux-arch-interfaces/SKILL.md",
+    ".claude/skills/crux-arch-risks/SKILL.md",
+    ".claude/skills/crux-arch-tradeoffs/SKILL.md",
+    ".claude/skills/crux-impl-reconcile/SKILL.md",
+    ".claude/skills/crux-project-bootstrap/SKILL.md",
+    ".claude/skills/crux-spec-coverage/SKILL.md",
+    ".claude/skills/crux-spec-deep-dive/SKILL.md",
+    ".claude/skills/crux-spec-develop/SKILL.md",
+    ".claude/skills/crux-spec-impact/SKILL.md",
+    ".claude/skills/crux-spec-refactor/SKILL.md",
+    ".claude/skills/crux-spec-review/SKILL.md",
+    ".claude/skills/factory-0010-focus-on/SKILL.md",
+    ".claude/skills/factory-0010-onboard/SKILL.md",
+    ".claude/skills/factory-0010-optimize/SKILL.md",
+    ".claude/skills/factory-0010-scaffold/SKILL.md",
+    ".claude/skills/factory-0010-shutdown/SKILL.md",
+    ".claude/skills/factory-0010-start/SKILL.md",
+    ".claude/skills/factory-0010-verify/SKILL.md"
   ],
   "targets": {
-    "codex": "2026-09-21"
+    "claude-code": "2026-09-21",
+    "opencode": "2026-09-21"
   }
 }

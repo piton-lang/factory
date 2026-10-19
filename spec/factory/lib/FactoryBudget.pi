@@ -1,0 +1,80 @@
+export abstract anchor FactoryBudget:
+    budgetReservation:
+        Budget enforcement is best effort because provider spend can outrun
+        estimates. Where a harness supports a hard per-attempt token or cost
+        ceiling, the factory sets one. Where it does not, the engineer records
+        the bounded residual exposure they accept.
+        A reservation is created atomically with dispatch intent and account
+        selection under an account admission lock. Concurrent orders cannot both
+        pass admission against the same remaining amount. Reservations are per
+        attempt and reconcile with actual usage. If actual exceeds the
+        reservation, both are updated before new dispatch. Late readings
+        reconcile idempotently.
+        A reservation remains a floor until confirmed usage or an explicit
+        engineer write-off. Expiry never frees budget for an attempt whose usage
+        is unknown; a cautious estimate applies above the retained floor. The
+        default expiry for an unconfirmed launch that never started is one hour,
+        and the proof required is adapter discovery or negative confirmation.
+        Subscription allowances are admission-controlled in usage units. The
+        factory tracks unit reservations, model-to-unit conversion, and reset
+        windows, and distinguishes throttling from exhausted allowance.
+        Concurrent dispatch cannot exceed the allowance by reservation. Variance
+        in conversion uses a conservative fallback.
+        Budget exhaustion stops API-funded dispatch only. The factory first
+        tries another approved account or subscription. Subscription, local, and
+        control-plane operations continue under a reserved control budget for
+        status, cancellation, assessment, and checks. A large low-priority
+        reservation cannot hold budget or block a small high-priority step;
+        admission is priority-aware and made at dispatch time.
+        On overrun the factory stops new API dispatch and reports confirmed
+        spend, reservations, unreported estimates, reading age, and the exact
+        limit, then asks the engineer. Running work may continue. When projected
+        overrun would exceed the accepted exposure bound, the factory requests
+        cancellation; the provider may ignore it. The bound is derived per
+        account from concurrent attempt timeouts, maximum burn rate, and
+        detection and cancellation latency. A provider-enforced ceiling is
+        preferred and treated as hard when available. A best-effort account
+        asserts that dispatch stops and the ledger reconciles, not that provider
+        spend stays below the bound. No budget is borrowed and no funds are
+        assumed. Unresolved attempts keep a quarantine concurrency slot and
+        their reservation floors. The factory tracks aggregate unresolved
+        exposure per account in estimated currency and usage units, not attempt
+        count. When that exposure crosses the approved bound, new launches on
+        that account stop and escalate; other accounts and unrelated orders
+        continue. Status reports the ledger, window, reading age, enforcement
+        mode, and unresolved exposure. Per-order and factory-wide caps remain
+        future work.
+    accountingModel:
+        Each ledger is keyed by account, billing mode, and reset-window epoch
+        and holds one scalar unit: currency for an API account or normalized
+        usage for a subscription. A subscription allowance is converted through
+        the same versioned table as reservations, and the table version is
+        pinned for the life of a reservation. A table miss is budget-unknown.
+        Build and test compute uses a separate compute ledger; capacity alone is
+        not currency. A paid fallback uses a distinct API account or billing-
+        mode ledger, never the subscription ledger.
+    usageAttribution:
+        Admission total is confirmed high-water plus active reservations not yet
+        covered by observed advance plus unresolved exposure plus projected
+        overrun of active attempts plus an unreported-burn reserve. The reserve
+        is added once per account for the stale interval, not per admission.
+        A reservation decreases by observed advance since its dispatch baseline.
+        Advance allocation goes to the oldest unresolved amount first, then to
+        active reservations; partial coverage leaves the remainder unresolved.
+        Readings carry a provider identity or per-account sequence and apply only
+        when they advance the high-water mark.
+    resetWindows:
+        Each subscription counter has a window epoch. An attempt holds its
+        reservation in every window it spans until the attempt closes or
+        confirmed usage arrives; a reset confirmation alone never releases it.
+        A pre-reset tail without a final reading is unresolved exposure bounded
+        by the burn-rate estimate. A reset requires a provider marker or the
+        window boundary; a downward correction is not a reset.
+    throttlingClassification:
+        A 429 with an explicit exhausted discriminator is a budget blocker. A
+        429 with a throttling discriminator uses retry and backoff and may
+        trigger the paid-fallback decision. An ambiguous refusal with stale data
+        is throttling with an immediate refresh; repeated unexplained refusals
+        escalate. A pre-approved fallback policy is scoped per account, order,
+        cap, and expiry, and retains the subscription reservation until handoff
+        is confirmed.

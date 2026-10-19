@@ -1,0 +1,128 @@
+export abstract anchor FactorySecurity:
+    authorizationMatrix:
+        Authorization is deny-by-default on operation, actor, target, and
+        precondition. Reads are authorized reads under the read filters, not
+        operations.
+        Order and plan changes are allowed to the engineer or the plan owner
+        within revision authority. Execution reports, help requests, evidence,
+        and progress are allowed to the assigned agent for its step. Engineer
+        questions are answered by the engineer or an explicitly delegated agent
+        within its grant. Configuration and evolution changes require the
+        engineer or a recorded pre-authorization. Delivery is performed by the
+        delivery owner, merger, or integrator for the target; acceptance by an
+        independent assessor. Auditors perform no operation.
+        Cancellation uses cause authority: supersession by code with an
+        authorized revision, budget and policy by code, engineer replacement by
+        the engineer, higher-tier cancellation by a higher tier within its own
+        order or subtree. The cause authority also sets grace. A request to
+        cancel and the actual stop are separate permissions. A harness adapter
+        may confirm a stop but may not decide cancellation.
+    actorIdentity:
+        An actor context is signed by the project authentication service with
+        audience, nonce, and freshness, and verified at the transport before
+        any operation. Session and attempt records store role and tier.
+        A free-text actor field is never sufficient. A verification failure is
+        denied and audited, distinct from an absent context.
+    capabilityRecord:
+        A capability records issuer, operation, target, scope, expiry, and
+        revocation. The issuer must itself hold the scope; delegation cannot
+        widen it. Capabilities are signed and written only by factory code.
+        They are checked at intent commit and before every external effect. If a
+        capability is revoked or expires before the effect, the intent is
+        tombstoned, no effect occurs, and the incident escalates.
+    auditIntegrity:
+        A change audit entry commits in the change transaction. Denial and
+        replay entries are separate append-only audit entries with their own
+        sequence and no state change other than the audit append.
+        Entries are hash-chained per target and globally. Checkpoints are
+        append-only, monotonic, independently readable, and anchored outside
+        the writable store. A maximum checkpoint interval bounds undetected
+        tampering. An unreachable anchor marks audit degraded and blocks new
+        external effects until it recovers; existing work continues.
+        A broken chain or missing sequence blocks the affected target or the
+        whole factory when the global chain is affected. The incident is
+        recorded outside the broken chain where possible. Recovery quarantines
+        the affected scope; it never rewrites history.
+    authorizationRows:
+        Each operation row names its actors, target, and preconditions. Submit
+        order: engineer or an agent with a recorded engineer-delegation
+        capability; precondition a valid submission. Revise order: engineer or
+        the recorded plan owner or a higher tier; precondition an active order
+        and the current aggregate version. Add or revise step or dependency:
+        plan owner or higher tier, or the assigned agent for its own work within
+        revision authority; precondition an active plan and current plan
+        version. Supersede: plan owner or higher tier; precondition a committed
+        authorized revision and a nonterminal step. Propose or merge a plan
+        revision: plan owner or higher tier and the merge owner; precondition
+        the current plan version.
+        Report outcome, request help, escalate, attach evidence, report
+        progress, heartbeat, and record build or check: assigned agent;
+        precondition an active attempt and the session lease. Answer or
+        withdraw a question: engineer or delegated agent; precondition the
+        current question generation. Assess a step: independent assessor;
+        precondition the result revision and frozen criteria. Accept an order:
+        independent assessor; precondition all required receipts, combined
+        checks, and the completion assessment, and no self-implementation.
+        Request cancellation: cause authority; precondition the target attempt.
+        Stop: cause authority and the adapter; precondition an existing request
+        and grace. Configuration and evolution: engineer or recorded
+        pre-authorization with separate grants. Delivery: delivery owner,
+        merger, or integrator for the target; precondition the target lease,
+        epoch, and candidate revision. Dispatch and resource allocation: factory
+        code. Start, shutdown, and import: engineer or factory code. Run
+        conformance and append a report: an independent verifier principal;
+        precondition an admitted independence record. Alter an existing report
+        or write implementation code: denied. Reads use read filters.
+        The plan owner is a durable role on the plan record; after a merge it is
+        the merge owner, and after recovery it is recorded with the plan. Higher
+        tier is relative to that role.
+    auditSequence:
+        Every audit entry has one global sequence and a sequence for its primary
+        chain. The primary chain is the canonical target, otherwise the order,
+        account, or factory scope. Every entry links the global hash and its
+        chain hash. Denial and replay entries allocate both sequences and follow
+        the same links. A multi-key change records one entry with a primary
+        chain and references the other keys.
+        Checkpoints are post-commit and bind a global position to every chain
+        head at that position. A chain head ahead of the checkpoint position is
+        unresolved, not tampering. The anchor is append-only and independently
+        readable; last-seen checkpoint state lives in the anchor, not the
+        writable store. An interval breach blocks new external effects by effect
+        class; an effect already in flight becomes in-doubt.
+    audit:
+        Change entries commit in the change transaction. They are gap-free and
+        ordered by one global sequence plus a chain sequence. Denial and replay
+        entries follow auditIntegrity. Recovery reads committed records and
+        never replays the audit to rebuild state.
+    authorizationConformance:
+        Every authorization row maps to at least one positive cell and one
+        denial cell, and a missing row is a failure. Cells keep the operation
+        and precondition constant and vary actor or target; a cross-order cell
+        records the target change as the tested dimension. Each cell asserts the
+        denial reason, the gate exercised, the order aggregate version
+        unchanged, and a canonical SHA-256 state digest over the order, attempt,
+        result, lease, and claim records unchanged. Audit cells require a
+        populated log, the agent's own entries present, a clean global and
+        per-chain validation, per-chain tampering with the affected scope
+        blocked while a contemporaneous clean control validates, one effect for
+        a replay, and an unreachable anchor blocking new effects. Not-applicable
+        is not a pass.
+    securityConformance:
+        Separately verdicted cells pair a positive control and a denial:
+        agent cross-order action denied while the same agent acts on its own
+        step; agent answer denied while the engineer or a delegated agent
+        answers; agent cancel above tier denied while a higher tier within its
+        subtree cancels; capability expired or revoked at the effect gate denied
+        while a fresh capability succeeds; wrong-account or wrong-route
+        credential denied while the correct binding succeeds; unauthorized
+        configuration change denied while an authorized change succeeds;
+        implementer self-acceptance denied while an independent assessor
+        accepts; and dashboard action without identity denied while the same
+        action with identity succeeds.
+        Audit cells assert an agent can read its own entries and cannot read
+        another order's, a clean chain and checkpoint validate, a denial entry
+        exists with no state change beyond the audit append, a replay appends
+        one entry, and a tampered chain or checkpoint mismatch is detected and
+        blocks the affected scope. A cell that never reaches its condition is
+        not passed; unsupported and not-applicable are not passing verdicts for
+        a claimed factory.

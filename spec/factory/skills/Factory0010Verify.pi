@@ -1,0 +1,40 @@
+use @piton/belay
+from ../Factory import Factory
+from ./lib/FactorySkillBase import FactorySkillBase
+
+export skill Factory0010Verify extends FactorySkillBase:
+    description: Verify a factory implementation against the specification's conformance scenarios.
+    useWhen: checking whether a factory implementation conforms, before adoption, or after a specification update
+    prompt:
+        Read @{Factory.conformanceScenarios}, @{Factory.verifierIdentity},
+        @{Factory.reportAdmissibility}, @{Factory.conformanceReport},
+        @{Factory.conformanceIndependence}, and @{Factory.conformanceVerdicts}.
+        Confirm you are a distinct authenticated principal, not merely a new
+        session, and that you are outside the recorded excluded set. Confirm
+        you cannot modify the code under test and may only append one report.
+        If independence cannot be established, stop and report that the
+        verification is not admissible.
+
+        Read the project descriptor and its recorded specification version.
+        Map each claimed capability to its scenarios. Core scenarios are always
+        required. Run each scenario with its stated setup, action, and expected
+        observable. Record the invocation, observed value, evidence reference
+        and hash, timestamps, and a verdict of pass, fail, unsupported, or
+        not-applicable. A scenario that cannot be exercised is not silently
+        passed.
+
+        Store the report as a write-once evidence artifact and submit it for
+        admission. Cite the base report for a delta re-run and cover every
+        required scenario exactly once. A pass expires on any specification,
+        implementation, descriptor, capability, or environment change, or after
+        90 days.
+        Report implementation gaps as failures. A claimed specification gap
+        becomes an amendment proposal requiring engineer approval; it does not
+        turn a failure into a pass.
+
+        Do not repair the implementation during verification. Do not claim
+        conformance from a report you cannot substantiate with evidence.
+    result:
+        Report the checklist and specification versions, the scenarios run and
+        their verdicts, evidence locations, unsupported or not-applicable
+        scenarios with reasons, and any amendment proposals.

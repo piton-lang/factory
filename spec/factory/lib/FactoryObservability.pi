@@ -1,0 +1,61 @@
+export abstract anchor FactoryObservability:
+    factModel:
+        Every fact has a value and an independent state. States are current,
+        stale, unknown, and unavailable. A real zero is a value with state
+        current, not a state. Precedence is unavailable, unknown, stale, then
+        current. Unknown means no reading has ever been obtained; unavailable
+        means the source cannot be reached.
+        A derived fact inherits the worst state of its required inputs. It is
+        withheld only when no value can be produced; withholding is rendered as
+        unknown, never as silent omission.
+    freshness:
+        Policy sets a maximum freshness limit per fact class. A source may
+        declare a shorter limit but not a longer one. Each rendered fact shows
+        its age, limit, source, policy version, and provenance: observed,
+        estimated, projected, reserved, or unresolved exposure. Derived facts
+        reference their inputs. A fresh snapshot never upgrades a fact, and a
+        stale snapshot floors every fact's freshness.
+    healthScopes:
+        Health is scoped to factory, account, route, target, and order. Each
+        scope has a minimum required fact set: factory covers dispatch, budget,
+        queue, and unresolved exposure; account covers usage and reading age;
+        route covers breaker and wiring validity; target covers lease and queue;
+        order covers step, question, and liveness state.
+        A scope is degraded when a required fact is stale, unknown, or
+        unavailable. Factory health is degraded when a required global fact is
+        bad or when every child scope of a required kind is degraded; otherwise
+        it reports a degraded-scope count. Total child failure cannot render
+        green.
+    readAccess:
+        The engineer may read all operational facts. An agent may read its own
+        step and attempt records, its order's plan and dependency states, and
+        aggregate queue, capacity, and budget facts; it may not read another
+        order's prompts, evidence, or artifacts. An auditor may read
+        operational facts, evidence references, and audit entries, but not
+        secrets, prompts, or artifact content unless separately granted, and
+        performs no operation. Dashboard reads pass the same filter as CLI
+        reads.
+    actionSet:
+        The dashboard exposes submit and answer. Onboard, start, and shutdown
+        remain CLI and onboarding surfaces. Every exposed action uses the
+        standard operation envelope and authorization. A read-only deployment
+        declares no actions and is not treated as degraded runtime mode.
+        Degraded runtime mode keeps status, answer, and shutdown available for
+        repair.
+    observabilityConformance:
+        Separately verdicted cells inject a fresh control and a fault on the
+        same fact: fresh usage, stale usage, unreachable usage source, real
+        zero, unknown model availability, and missing queue data. Each asserts
+        the value, state, age, limit, policy version, source, and reason cause.
+        Health cells assert order-local degradation without global red, global
+        degradation from a global required fact, all-child failure rendering
+        degraded, and recovery to current.
+        Access cells assert an authorized engineer action, a rejected
+        unauthorized action with no state change, an agent reading only its own
+        order facts, an auditor reading facts but not secrets or prompts and
+        performing no action, and a read-only deployment exposing no actions.
+        Parity cells inject a source update and require both surfaces to show
+        it, and run submit and answer through each surface with exactly one
+        effect. A cell that never reaches its condition is not passed;
+        not-applicable is not a pass except for a declared read-only deployment
+        with its own evidence.

@@ -37,35 +37,44 @@ export abstract anchor FactoryBackground:
         general-purpose factory. Detailed acceptance scenarios and the exact
         boundary of work to resume remain unresolved.
     openQuestions:
-        - Exact contents and representation of orders, tasks, steps, and their handoffs.
-        - Scheduling priorities, plan conflict representation, and handling of affected steps during delegated conflict resolution.
-        - Build and test resource model.
-        - Known factory operation set, integration wiring representation, and per-operation validation checks across harnesses, builds, tests, and delivery.
-        - Resolution of peer revision proposals when no smarter tier is available.
+        - Exact code-module wire schema, settings request mapping, and response extraction.
+        - Retention close and submission-resolution events.
+        - How conformance independence is enforced and audited.
+        - Feasibility of attempt-token injection and discovery per harness.
+        - Hard per-attempt ceilings and residual budget exposure where providers do not enforce limits.
+        - Canonical payload fingerprints and idempotency claim-lease defaults.
+        - Exact brief and handoff schema.
+        - Exact required behavior and minimum output for onboard, start, submit, answer, and shutdown.
+        - Dashboard presentation and its authentication model.
+        - Whether a dedicated drift report is ever needed beyond agent reconciliation after specification updates.
         - Configuration of intelligence levels and roles.
-        - Engineer-set model-routing thresholds, task categories, and reviewer-based model evaluation methods.
-        - Configuration interview contents and configuration file format and location.
+        - Engineer-set model-routing thresholds, evidence thresholds for adding a category, and reviewer-based model evaluation methods.
         - Detailed responsibilities and handoffs for merging, testing, and review agents.
-        - Worktree allocation, integration, and cleanup policies.
-        - Recovery reconciliation details and retry defaults.
-        - Shutdown handling when running steps hang or await engineer input.
-        - Account allowance visibility, cautious usage estimation, and uncertainty handling for unavailable or delayed readings.
+        - Integration ordering and merge strategy for concurrent worktree results.
+        - Recovery reconciliation details for in-flight external effects.
+        - Account allowance visibility, concrete provider conversion tables, burn-rate values, and exposure bounds.
         - PID-style resource control measurements, outputs, tuning, and speed-quality-economy tradeoffs.
-        - Integration contracts for Claude Code, Codex, and OpenCode.
+        - Per-harness signal availability and adapter implementation details.
         - DeepSeek Harness integration and support for the chosen agent providers.
-        - Mapping existing Popcorn artifacts and progress into the new factory, the resumption boundary, and detailed acceptance scenarios.
+        - Mapping existing Popcorn artifacts and progress into the new factory, the detailed resumption mapping, and additional acceptance scenarios.
         - Existing Jev progress integration and its relevance to proposed token optimization.
-        - Tethered specification updates, identification of self-enhancement needs, and implementation-specific update and restart criteria.
+        - Implementation-specific update and restart criteria, review cadence values, and routing evidence thresholds.
         - Whether and how model-performance learning transfers between project-specific factories.
+        - The role, scope, technology, and relationship of the reference implementation.
+        - Broker, credential lease, and provider-specific secret handling.
     specificationStatus:
-        Eight interview rounds totaling 65 answered questions are complete.
-        The requested final round of 5 questions is complete and incorporated
-        into this specification. The interview is finished; remaining open
-        questions are recorded explicitly rather than silently assumed.
+        Twelve interview rounds totaling 115 answered questions are complete and
+        incorporated. Round 12 was an autonomous implementability round of 20
+        questions, each answered here and challenged by two review rounds. No
+        interview round is in progress. The specification awaits the engineer's
+        decision whether it is good enough or another round should continue.
+        Remaining open questions are recorded explicitly rather than silently
+        assumed.
     interviewFocus:
-        No interview question is pending. The final round established engineer
-        input when autonomous resolution looks unlikely, need-driven factory
-        enhancements, priority-first capacity allocation, general evidence-based
-        adoption of existing work, and agent-recommended operating policies for
-        engineer approval. Do not automatically begin another interview round
-        or implementation work.
+        No round is in progress. Round 12 added lifecycle and attempt state
+        machines, cancellation policy, question and changed-answer semantics,
+        stall detection, a liveness and discovery contract, retries, priority,
+        build and test jobs, budget reservation, persistence and idempotency,
+        wiring and validation checks, evidence retention, the descriptor schema,
+        scaffold installation and validation, conformance scenarios, and the
+        standard operation envelope, actor classes, and core records.

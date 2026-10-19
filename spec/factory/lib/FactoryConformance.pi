@@ -1,0 +1,56 @@
+export abstract anchor FactoryConformance:
+    conformanceScenarios:
+        Conformance is required and is demonstrated through a typed checklist.
+        Core scenarios are:
+        - a fresh scaffold with a valid descriptor, six runnable commands, successful onboarding, and a loading dashboard
+        - an order lifecycle with independent assessment and completion evidence
+        - question blocking, answers, changed-answer revalidation, and successors
+        - restart recovery, launch-gap adoption where token or lookup discovery supports it, duplicate-session containment, and no duplicate work; reference-only adapters must block and escalate without launching
+        - confirmed, failed, and unconfirmed cancellation with preservation
+        - budget reservation, delayed usage, priority admission, and overrun stop
+        - plan conflict pause, merge, revalidation, and resume
+        - per-writing-step isolation, pinned prerequisites, and cleanup after preservation
+        - job capacity, priority, caching, retries, cancellation, recovery, and local-remote parity
+        - wiring validation, repair, rollback, outage classification, and idempotency
+        - duplicate requests, version conflicts, late outcomes, and late results
+        - evidence manifests, redaction, retention, tombstones, and secrets
+        Additional required scenarios cover status observability and
+        cannot-start reasons, graceful shutdown, onboarding states and decision
+        categories, credential references, configuration change restoration,
+        adoption, stall detection and cause-routed escalation, deferred and
+        partial delivery, the delivery matrix, the recovery matrix, the
+        observability matrix, the authorization matrix, the lease matrix,
+        adoption mapping and conformance, and unmerged-prerequisite
+        reconciliation.
+    harnessRecoveryMatrix:
+        Harness recovery is tested in typed cells: harness, account kind,
+        discovery mode, and fault. Faults are launch-gap, duplicate launch,
+        client disconnect, confirmed death without result, harness restart,
+        crash before launch, and a token belonging to another attempt. Each cell
+        reports its own verdict, and external-effect counts are asserted with a
+        quiescence window.
+        Expected outcomes are: launch-gap adopts one session or establishes
+        authoritative not-launched and then launches exactly once; duplicate
+        launch yields one active session and one effect; disconnect reconnects
+        without a launch; confirmed death retries only retry-safe effects;
+        restart adopts surviving sessions with no launch; crash before launch
+        launches exactly once; a wrong token is never adopted. Reference-only
+        blocks the launch-gap cell without launching. Unsupported and
+        not-applicable are not passing verdicts for a claimed supported
+        harness; a launch-only mode needs an explicit engineer-approved
+        exception.
+    budgetConformance:
+        Budget conformance uses typed cells: per-attempt usage, cumulative-only
+        usage, delayed reading, out-of-order reading, duplicate reading, restart
+        between reading and reconcile, mid-flight reset, provider-enforced
+        ceiling, budget-unknown mode, unresolved exposure crossing, throttling,
+        exhaustion, and paid fallback. Each cell records an expected
+        observation.
+        A positive control constructs an estimate greater than remaining
+        capacity and asserts the refused dispatch with its budget reason while
+        unrelated work on another account continues. Reconciliation completes
+        only after readings are drained and the high-water mark is quiescent. A
+        best-effort cell asserts dispatch stopped and the ledger reconciled. A
+        provider-enforced cell asserts actual usage stayed within the ceiling. A
+        budget-unknown cell asserts the accepted exposure bound and does not
+        claim a hard cap.

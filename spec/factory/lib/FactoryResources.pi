@@ -10,10 +10,13 @@ export abstract anchor FactoryResources:
         code, including queueing, dispatch, and capacity enforcement. Agents
         handle the project- and machine-specific wiring that connects those
         controls to actual remote build environments. Preserve this separation
-        between deterministic controls and agent-based wiring. The wiring's
-        representation remains unspecified; its reuse, repair, and validation
-        follow the general integration principle and wiring validation policy.
+        between deterministic controls and agent-based wiring. Its
+        representation follows the general wiring representation; its reuse,
+        repair, and validation follow the general integration principle and
+        wiring validation policy.
     spendingLimits:
+        Reservations, admission, overrun handling, and subscription-unit
+        controls follow FactoryBudget.budgetReservation.
         API account budgets established during setup are enforced in the
         initial scope. This supersedes the earlier deferral of custom spending
         caps insofar as API account budgets are concerned. Additional per-order
@@ -27,8 +30,9 @@ export abstract anchor FactoryResources:
         policy. When fresh usage readings are unavailable, continue assigning
         work using cautious estimates based on the last known allowance and
         subsequent work. Missing readings alone do not stop dispatch. Estimates
-        remain subject to the account limits and budgets; the exact estimation
-        method and uncertainty handling remain unresolved.
+        remain subject to the account limits and budgets; concrete provider
+        conversion tables, burn-rate values, and exposure bounds remain
+        project-specific.
     resourceOptimization:
         The factory aims for speed, quality, and economy. Initial setup asks
         the engineer how many Claude subscriptions are available, their kinds,
@@ -50,19 +54,23 @@ export abstract anchor FactoryResources:
         delayed usage data remain unresolved. A downstream-work priority rule
         has not been adopted as the scheduling policy.
     adaptiveModelSelection:
-        Model routing depends on thresholds set by the engineer. The factory
+        Model routing depends on thresholds and hard limits set by the
+        engineer. The engineer approves the models that may be used. Within
+        those limits, the factory chooses models by learning from observed
+        results rather than fixed rankings, separately for each kind of work.
+        A particular order may state a different speed, quality, or economy
+        priority and override the default preference for its steps. The factory
         continually researches the changing model landscape and adapts its
         optimization within those thresholds. Evaluate models using returned
         work and higher-tier reviewers' assessments, alongside capability,
         speed, throttling, and API or subscription economics. Model selection
-        must evolve with observed results rather than rely on fixed rankings.
-        The engineer currently describes DeepSeek Flash as very fast with
-        generous throttling, and MiMo as more capable but slower, aggressively
-        throttled, and offering a subscription plan. These are the engineer's
-        observations, not permanent provider guarantees or verified current
-        product claims. The factory asks the engineer before trying a newly
-        researched model. Exact thresholds and evaluation methods remain
-        unresolved.
+        must evolve with observed results. The engineer currently describes
+        DeepSeek Flash as very fast with generous throttling, and MiMo as more
+        capable but slower, aggressively throttled, and offering a subscription
+        plan. These are the engineer's observations, not permanent provider
+        guarantees or verified current product claims. The factory asks the
+        engineer before trying a newly researched model. Exact thresholds and
+        evaluation methods remain unresolved.
     accountAllocation:
         Automatically distribute new work across approved accounts according
         to the best optimization of speed, quality, and economy within the
@@ -77,12 +85,16 @@ export abstract anchor FactoryResources:
         API budget alone does not authorize this tradeoff. Routine allocation
         within an already approved policy remains automatic.
     taskSpecificModelEvaluation:
-        Learn model strengths and weaknesses separately by kind of work using
-        returned results and higher-tier review assessments. Use that history
-        to guide routing of similar work. A model's success on routine changes
-        must not imply equal suitability for complex numerical algorithms or
-        other different kinds of work. Task categories and the exact evaluation
-        method remain unresolved.
+        Task categories begin with a small starter set tied to workflow roles,
+        such as planning, implementation, review, integration, and research. A
+        project may add a category when its work justifies one, with engineer
+        approval. Keep the set stable enough for evidence to accumulate. Learn
+        model strengths and weaknesses separately by category using returned
+        results and higher-tier review assessments. Use that history to guide
+        routing of similar work. A model's success on routine changes must not
+        imply equal suitability for complex numerical algorithms or other
+        different kinds of work. The exact evaluation method remains
+        unresolved.
     outcomeEfficiency:
         Judge model efficiency by the total time and cost to reach an accepted
         result, including review passes and corrections, rather than only the

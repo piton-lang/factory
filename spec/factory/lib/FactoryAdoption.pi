@@ -1,21 +1,74 @@
 export abstract anchor FactoryAdoption:
     projectSpecificRealization:
-        This project's deliverable is the factory specification, not a single
-        factory implementation. Consuming projects tether the specification
+        This project's primary deliverable is the factory specification, not a
+        single mandated factory implementation. Consuming projects tether the specification
         through Piton and use it to build a factory suited to their project.
         The engineer chooses the implementation language and other appropriate
         implementation choices. Each project's factory grows gradually with
         that project's needs. Keep reusable requirements distinct from those
         project-specific implementation choices. Do not assume one shared
         factory service or centrally shared model-performance history.
+    referenceImplementation:
+        The reference implementation is optional and lives in a separate
+        repository. It is a worked example, not a dependency, a required
+        template, or a fork source. The package declares the baseline stack. A
+        reference implementation may claim conformance only through a
+        conformance report owned by FactoryVerification and an independent
+        verifier; otherwise it is only an example. It declares a supported specification range, and any
+        specification-version change expires its conformance report. Drift is
+        permitted but visible. Scaffold agents may not inspect or copy it
+        without explicit engineer authorization. Tooling work is not gated on
+        it, and its absence never blocks onboarding, adoption, or conformance.
+    adoptionMapping:
+        Every imported record passes an admission rule with a disposition:
+        retained, translated, reassessed, or discarded, with a recorded
+        rationale and engineer approval for discard or reassessment. Provenance
+        is required for every record: source location, source version, content
+        hash, source factory identity, tether and configuration versions, and
+        mapping.
+        Retain or translate only when hash verification, ingestion policy,
+        secret quarantine, and pinned ref or durable diff all pass; otherwise
+        reassess. Imported plans must be closed over their dependencies and
+        evidence; incomplete plans are parked non-dispatchable. Completed work
+        is evidence and produces zero launches and zero effects.
+        A foreign live session gets a foreign-session record with harness,
+        reference, old owner, lease and epoch or quarantine, and an engineer
+        decision to adopt, stop, or abandon. Adoption mints a new lease and
+        epoch under FactorySessions and requires evidence that the old owner
+        stopped dispatching or is unreachable. Unknown liveness and unsupported
+        discovery keep the session quarantined.
+        The first milestone is one imported, still-relevant pending order
+        reaching recorded final acceptance with required evidence, plus one
+        mid-order restart with no duplicate effects. The import report records
+        who judged relevance.
+    adoptionConformance:
+        Adoption conformance cells have expected observations and path-reached
+        assertions. They cover: disposition and provenance for every imported
+        record; a completed imported result with zero launches and zero effects
+        under a positive control that the observation path records a launch when
+        one is expected; a live foreign session with an ownership decision and
+        no duplicate; one imported order reaching final acceptance with lineage
+        to its imported identity and source version; every other imported order
+        fully mapped or parked non-dispatchable with zero launches; an uncertain
+        or unverified completion not trusted as done; crash-mid-import
+        resumability with no duplicate records and no half-imported dispatchable
+        plan; a mid-order restart evaluated by the recovery matrix exactly once;
+        and reference implementation absent, with import and resumption still
+        passing, and present, with no change to scaffold, descriptor, onboarding,
+        routing, or verdicts. Counts alone never pass a cell.
     incrementalAdoptionAndEvolution:
         A consuming project initially implements only the factory capabilities
         it needs. As needs grow, its factory can read the tethered factory
         specification and use its own task execution capabilities to dispatch
         work that enhances its implementation. Support this self-evolution
         rather than requiring every specified capability at initial adoption.
-        How enhancement needs are identified remains unresolved. Activation
-        follows the self-update continuity requirements.
+        Enhancement needs are identified both when work is blocked or a
+        reusable improvement is noticed during assigned work and through
+        periodic review of completed work, recurring blockers, repeated manual
+        steps, and resource data. Both paths feed the same enhancement approval
+        policy. Review scheduling, proposals, approval, routing evidence, and
+        category lifecycle follow FactoryEvolution. Activation follows the
+        self-update continuity requirements.
     selfEnhancementAuthority:
         Ask the engineer before initiating factory enhancement tasks by
         default. The engineer may authorize automatic approval of future
@@ -48,11 +101,17 @@ export abstract anchor FactoryAdoption:
         change. The scope and duration of that authorization follow the
         engineer's instruction.
     configuration:
-        Initial configuration is developed through a series of prompt questions
-        driven by an agent. The resulting configuration is written to an actual
-        configuration file. Setup includes the account and budget questions in
-        resourceOptimization. Other initial options, file format, and location
-        remain unspecified.
+        Initial configuration is developed through a series of prompt
+        questions driven by an agent. The resulting configuration is written to
+        the implementation's actual configuration file and recorded through the
+        descriptor. Onboarding must always establish the implementation
+        choice, available harnesses and account kinds, budgets and allowance
+        limits, build and test capacity, delivery preference, and an approved
+        initial operating policy. It asks further questions only for the chosen
+        capabilities, remote-build setup, routing thresholds, and existing-work
+        import. File format and location remain project-specific. Onboarding
+        states, outputs, the decision set, the credential boundary, change
+        application, and acceptance follow FactoryOnboarding.
     initialOperatingPolicy:
         During onboarding, an agent recommends an initial operating policy
         based on the project's needs, available accounts, and build capacity.

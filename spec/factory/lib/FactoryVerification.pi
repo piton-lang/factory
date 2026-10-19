@@ -1,0 +1,72 @@
+export abstract anchor FactoryVerification:
+    conformanceReport:
+        A report records checklist version, specVersion, implementationVersion,
+        actor and independence, scenario identifier, capability mapping,
+        invocation, observed value, evidence reference and hash, timestamps, and
+        a verdict. The report is an artifact under the evidence rules. The
+        checklist and report are versioned with the specification.
+    conformanceIndependence:
+        The verifier is a different agent or session from the implementation
+        work, did not author the scaffold, plan, or a required step, and cannot
+        modify the code under test. Independence is checked against audit and
+        commit authorship. The report is written somewhere implementers cannot
+        alter.
+    verifierIdentity:
+        The verifier is a distinct authenticated principal identified by issuer
+        and subject, not merely a new session. The excluded set is recorded
+        before the run: scaffold author, descriptor and configuration author,
+        onboarding author, plan author, every required implementer, the assessor
+        of the same steps, delivery owner, merger, and integrator. The verifier
+        records its signed context, session and attempt identity, and the pinned
+        clean revision it observed.
+        Verification grants cover running conformance and appending one report.
+        The verifier may append its own report but may not alter an existing
+        report, write implementation code, or write configuration. An external
+        principal may verify if it is accepted by the project auth service. If
+        no qualified independent principal exists, conformance stays blocked.
+        The engineer cannot waive independence, including through a
+        pre-authorization grant.
+    reportAdmissibility:
+        A report records checklist version, specification version,
+        implementation version, descriptor version, claimed-capability
+        inventory, environment fingerprint, verifier principal, pinned revision,
+        per-scenario invocation, observed value, evidence hash, path-reached
+        assertion, verdict, and trusted run time. The report hash is signed and
+        anchored in the append-only audit chain. Reports are write-once.
+        A pass expires on any specification, implementation, descriptor,
+        capability, or environment change, or after 90 days from the trusted run
+        time. A delta report reuses base evidence only for scenarios whose
+        requirements, implementation, and environment are unchanged; it cites
+        the base and covers every changed scenario once. Chained deltas cannot
+        extend a base past its expiry. Evidence required by a live pass has a
+        retention hold past the pass lifetime.
+        A separate admission check records admissible or inadmissible with a
+        reason. Missing evidence, non-independent verifier, unsigned or
+        unanchored report, stale base, incomplete coverage, or a required
+        scenario marked unsupported or not-applicable is inadmissible. A
+        claimed specification gap remains a failure until an approved amendment
+        and a re-run produce a new report. Adoption and conformance claims
+        require an admissible report; an admissible report with a fail blocks
+        the claim.
+    verificationConformance:
+        Cells cover: implementer verifier rejected while an independent
+        principal passes a clean populated run; engineer-granted verifier
+        capability for an excluded principal rejected; descriptor, configuration,
+        or onboarding author rejected; external accepted principal allowed;
+        implementation, descriptor, capability, or environment drift expiring a
+        pass; day-90 expiry with retained evidence and GC; unsigned, unanchored,
+        or post-write altered report rejected; expired or missing delta base
+        rejected; duplicate or missing scenarios rejected; admissible failing
+        report blocking adoption; and re-run after amendment approval producing
+        a new report. Each cell records the pinned revision, environment,
+        evidence hash, and admission reason.
+    conformanceVerdicts:
+        Verdicts are pass, fail, unsupported, or not-applicable. Capabilities
+        are mapped to scenarios; only claimed capabilities require their
+        scenarios, while core scenarios are always required. A matrix cell is
+        reported separately and cannot be certified by a summary verdict. A
+        pass expires when the spec version changes or after 90 days. Delta
+        re-runs cite their base report and cover every required scenario exactly
+        once. A failure is an implementation gap; a claimed specification gap
+        becomes an amendment proposal requiring engineer approval and cannot be
+        marked passed.

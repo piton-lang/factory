@@ -14,7 +14,15 @@ export abstract anchor FactoryOrchestration:
         enough for agents to write integration code connecting them to the
         environment. Agents save reusable wiring; ordinary code executes it
         afterward, bringing agents back when wiring needs changes or repair.
-        The exact operation set and wiring representation remain open.
+        The operation set is defined in FactoryOperations.
+    wiringRepresentation:
+        Saved wiring uses settings for simple connections and code modules for
+        complex ones. Settings record the command or address, environment,
+        credential reference, and timeout the operation needs. Code modules
+        implement behavior that settings cannot express. Both forms sit behind
+        the same operation interface and must pass that operation's standard
+        check before use. Agents may write or repair either form within the
+        existing configuration and authorization.
     wiringValidation:
         Each factory button defines a standard check that its agent-written
         wiring must pass before use. The check verifies the integration's

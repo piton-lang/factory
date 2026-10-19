@@ -1,0 +1,51 @@
+use @piton/belay
+from ../Factory import Factory
+from ./lib/FactorySkillBase import FactorySkillBase
+
+export skill Factory0010Scaffold extends FactorySkillBase:
+    description: Scaffold a project's initial factory from the tethered specification.
+    useWhen: starting a project factory implementation where no factory exists yet
+    prompt:
+        Read @{Factory.scaffoldCapability}, @{Factory.scaffoldOutput},
+        @{Factory.standardSurface}, and @{Factory.commandInvocation}. Inspect
+        the project's specification, technology preferences, and existing tools
+        before creating files. If a factory implementation already exists,
+        report it and use onboarding or enhancement instead of scaffolding over
+        it.
+
+        Interview only for the choices scaffolding needs, one clear question at
+        a time, such as the implementation technology and where configuration
+        and the entry point should live. Do not invent unresolved command
+        behavior, schemas, or defaults. Keep project-specific decisions in
+        project-owned Piton or configuration.
+
+        Create a runnable minimal core in the chosen technology. Include the
+        descriptor, a configuration file, all six core commands (onboard, start,
+        submit, status, answer, shutdown), and a minimal dashboard that shows
+        the monitored facts and exposes the core actions. Omit optional commands
+        unless the engineer asks for them. Do not scaffold tests the engineer
+        did not request, and do not implement the full capability catalog.
+
+        Follow the descriptor schema exactly, including schemaVersion,
+        invocation, config, specVersion, and builtAgainstSpecVersion. Validate
+        the surface in an isolated sandbox with stubbed external services and a
+        cost cap. Stage writes and write the descriptor last; never leave a
+        half-scaffold that blocks retry. Report commands you could not verify as
+        unverified, not working.
+
+        Record how the factory is invoked in the fixed project descriptor,
+        together with the configuration location, the tethered specification
+        version, and the dashboard location when applicable. State which
+        optional commands the implementation supports. Do not depend on or fork
+        the reference implementation. Preserve existing user work and do not
+        overwrite files without permission.
+
+        Validate the result through the recorded entry point. Demonstrate that
+        the six commands and the dashboard respond, and that configuration is
+        read from its actual location. Do not claim the factory is operational
+        when only files exist or when external services remain unconfigured.
+        Report unresolved decisions rather than filling them silently.
+    result:
+        Report the technology chosen, files created, how invocation is
+        recorded, which commands and dashboard behavior were verified, and
+        which decisions remain open.

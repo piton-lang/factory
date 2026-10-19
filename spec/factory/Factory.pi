@@ -1,12 +1,8 @@
-from ./lib/FactoryAdoption import FactoryAdoption
-from ./lib/FactoryBackground import FactoryBackground
-from ./lib/FactoryDelivery import FactoryDelivery
-from ./lib/FactoryOrchestration import FactoryOrchestration
-from ./lib/FactoryPlanning import FactoryPlanning
-from ./lib/FactoryRecovery import FactoryRecovery
-from ./lib/FactoryResources import FactoryResources
+from ./lib/FactoryFoundation import FactoryFoundation
+from ./lib/FactoryRuntime import FactoryRuntime
+from ./lib/FactoryWork import FactoryWork
 
-export anchor Factory extends FactoryAdoption, FactoryOrchestration, FactoryPlanning, FactoryResources, FactoryRecovery, FactoryDelivery, FactoryBackground:
+export anchor Factory extends FactoryFoundation, FactoryWork, FactoryRuntime:
     description:
         A tetherable Piton specification for a general-purpose agentic factory
         that delegates work across configurable agents. Each consuming project

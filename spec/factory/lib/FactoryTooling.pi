@@ -1,0 +1,58 @@
+export abstract anchor FactoryTooling:
+    toolingPriorities:
+        Define the factory's tooling before beginning reference implementation
+        work. Start with engineer-facing tooling and the tooling that packages
+        and authors a project's factory. Agent-facing operation transport was
+        deferred initially; its envelope is now defined and its transport
+        remains a project choice.
+    standardSurface:
+        The specification fixes a minimal engineer-facing surface rather than
+        one factory implementation. Every custom factory exposes that surface,
+        while the technology and internal design underneath remain the
+        engineer's choice. This preserves implementation freedom without
+        leaving the engineer or the packaged skills without a common way to
+        operate a factory.
+    coreCommands:
+        - onboard — configuration, policy approval, existing-work assessment
+        - start — start, resume, and reconcile surviving work
+        - submit — an order from a prompt, a specification, or both
+        - status — the operational picture from the terminal
+        - answer — answer a question escalated to the engineer
+        - shutdown — stop the factory gracefully
+    optionalCommands:
+        Focus and optimize are standard but optional. Focus directs or
+        reprioritizes factory effort toward an objective, order, bottleneck, or
+        capability. Optimize inspects or tunes resource policy and model
+        routing within approved limits. A project may provide either through
+        its factory surface or reach the same work through the conversational
+        agent and packaged skills.
+    dashboardContract:
+        The dashboard shows orders, steps, agents, pending engineer questions,
+        resource and usage state, and overall factory health. It also exposes
+        the core engineer actions, including answering escalated questions, so
+        it is an alternative surface to the command line rather than a separate
+        capability. Its exposed actions and read scopes follow
+        FactoryObservability. Its presentation technology remains a project
+        choice.
+    statusReporting:
+        Status must report factory state and whether dispatch is active, the
+        specification version the implementation was built against, orders with
+        their state and priority, order progress and estimated completion with
+        confidence or explicit unknown, active steps with their assigned agent
+        or model and state, pending engineer questions with what they block and
+        how long they have waited, account usage against allowance or budget
+        with known reset windows, build and test queue and capacity, and recent
+        failed attempts, exhausted retries, and escalations. When eligible work
+        is not starting, status must say why, such as throttling, budget,
+        capacity, a dependency, or pending input. Freshness, provenance, fact
+        states, and health scopes follow FactoryObservability.
+    statusBoundary:
+        Status excludes full plans, dependency graphs, historical analytics,
+        and drill-down views. Those belong to the dashboard and are not dumped
+        by default.
+    unresolvedDetails:
+        Exact required behavior and minimum output for onboard, start, submit,
+        answer, and shutdown remain open. Dashboard presentation remains open.
+        These are implementation-relevant gaps, not permission to omit the
+        surface.
+

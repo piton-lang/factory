@@ -1,0 +1,55 @@
+export abstract anchor FactoryAuthoring:
+    packagingMechanics:
+        Consuming projects obtain the factory specification through ordinary
+        Piton packaging. They tether the package and update it with the normal
+        Piton commands. No separate factory-specific update or drift command
+        is mandated. The reconciliation required after a tethered update still
+        applies through FactoryAdoption, and agents may compare the project's
+        implementation with the updated specification as part of that work.
+    scaffoldCapability:
+        The package ships a scaffold capability as a Belay skill. A consuming
+        project uses the skill before any project-specific factory exists, so
+        no factory executable is needed beforehand. The skill guides an agent
+        to create the initial implementation from the tethered specification
+        in the engineer's chosen technology. It does not fork or depend on the
+        reference implementation.
+    projectSpecificConfiguration:
+        Configuration remains project-specific. The descriptor records where it
+        lives, but the package prescribes no universal configuration schema or
+        language. Durable, non-secret decisions belong in project-owned Piton;
+        runtime settings and credential references belong in the
+        implementation's own configuration. Credentials are never stored in the
+        specification.
+    scaffoldOutput:
+        The scaffold produces a runnable minimal core. That core includes the
+        descriptor, a configuration file, all six core commands, a minimal
+        dashboard meeting the dashboard contract, the wiring directory,
+        project-owned Piton for durable non-secret decisions, run instructions,
+        and a verification report. Optional commands are added only when
+        requested. Mandatory test scaffolding is not required. The scaffold does
+        not implement the full capability catalog; the project grows only the
+        capabilities it needs, following FactoryAdoption.
+    scaffoldTechnology:
+        The scaffold is agent-driven and supports any stack it can implement and
+        validate. The package declares a baseline stack for conformance, Python
+        3.12 with SQLite and a local HTTP dashboard; projects may choose another
+        stack. An incapable agent reports unsupported rather than producing a
+        partial factory.
+    scaffoldInstallation:
+        Preflight checks every target path. It refuses on existing files, an
+        existing `.factory` directory without a descriptor, symlink escape, or a
+        concurrent marker. It stages writes and moves them atomically, writing
+        the descriptor last. A crash marker supports resume or clean failure and
+        never leaves a half-scaffold that blocks retry.
+    scaffoldValidation:
+        Validation runs in an isolated temporary workspace with stubbed external
+        services, no real credentials, and a cost cap. Onboard validates
+        configuration and policy. Status and shutdown run on empty state. Submit
+        creates a visible order. Start uses a stub or local adapter and validated
+        launch wiring; if dispatch cannot be validated, the report says
+        accepted-not-dispatched rather than claiming dispatch. Answer uses a
+        synthetic question injected into the sandbox. The dashboard is loaded and
+        checked against its monitoring and core-action contract. Persistence is
+        checked across two invocations.
+        The report records technology, files, commands verified, commands
+        unverified with reasons, dashboard result, and unresolved decisions.

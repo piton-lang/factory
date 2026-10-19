@@ -19,6 +19,39 @@ export abstract anchor FactoryDelivery:
         specification, or both. The factory does not independently impose
         universal testing or review gates. Desired product outcomes belong to
         individual orders rather than to a fixed category of factory output.
+    completionAssessment:
+        An implementation agent reports a step done. A different higher-level
+        agent in a different session assesses the claim against the brief and
+        expected result without taking over the work.
+        Order completion requires all required steps completed, approved
+        deferred steps recorded, integration and delivery outcomes recorded, and
+        an independent assessment. The assessor is not an implementer of any
+        required step and did not author criteria after implementation. Criteria
+        are frozen before implementation or approved above the implementer. One
+        order assessor accepts step assessments. If the top tier implemented,
+        the engineer or a fresh independent reviewer with defined authority
+        assesses.
+        Completion evidence is a manifest of result versions, checks, artifacts,
+        diff identity, assessor identity, and delivery receipts. A change before
+        completion forces revalidation. After completion the evidence is frozen
+        and changes create a successor order.
+    deferral:
+        Deferred steps are proposed by planning and approved by the engineer
+        with a recorded reason and a configured cap. All value-bearing steps
+        cannot be deferred. Deferred work becomes a linked follow-up order at
+        completion and stays visible in status.
+    delivery:
+        Delivery is a tracked operation with outcomes succeeded, partial,
+        failed, or unnecessary, an idempotency key per target, per-target
+        receipts, and bounded retries. Target records, integration, unresolved
+        effects, and receipts follow FactoryIntegration. Partial delivery
+        records the remainder and creates follow-up work. Delivery failure
+        leaves the order active or blocked, never completed. Corrections after completion use successor
+        orders and record the prior external state.
+    successorOrders:
+        A completed order is immutable. Reopening creates a successor order with
+        a link and reason; there is no reopen operation. Post-completion
+        invalidation and corrections use successor orders.
     implementationCompletionHandoff:
         Completion checking is part of the delegated workflow. When an
         implementation agent reports done, a higher-level agent checks what
@@ -41,11 +74,15 @@ export abstract anchor FactoryDelivery:
         risk, reserving full blind review for difficult or high-risk work and
         lighter review for routine changes. This does not impose a universal
         review gate on every order.
-    deliveryDestination:
-        The order's prompt determines where completed work is delivered, such
-        as an integrated branch, a pull request, or the main branch. Asking for
-        a delivery default during onboarding is the preferred direction; the
-        exact default and fallback behavior remain unresolved.
     workspaceIsolation:
-        Git worktrees are the preferred mechanism for isolating concurrent
-        implementation work. Allocation and integration policies remain open.
+        Git worktrees are the mechanism for isolating concurrent implementation
+        work. Every step that writes files gets its own worktree and branch.
+        Read-only and review steps use the artifact under review rather than a
+        separate worktree. Track the exact prerequisite version each result
+        used. Worktrees whose work is finished are always cleaned up after any
+        required outputs are integrated or preserved. Cleanup requires a
+        committed preservation record with artifact identifiers, a pinned commit
+        or durable diff bundle and hash, untracked files, and the evidence
+        manifest. Cleanup never discards unfinished or unmerged work; cancelled
+        unmerged work is retained until the engineer closes it or a successor
+        supersedes it.

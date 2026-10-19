@@ -49,8 +49,9 @@ export abstract anchor FactoryPlanning:
         configured concurrency limits and available account usage. The factory
         checks for missing prerequisites and circular dependencies before
         executing affected steps.
-        Dependency readiness makes a step eligible to run; available capacity
-        determines when it starts.
+        Dependency readiness makes a step eligible to run; available agent
+        concurrency and budget determine when it starts; build and test capacity
+        determines when its jobs start.
     orderPriorities:
         When orders compete for constrained capacity, favor completing the
         highest-priority order sooner. Other orders may use capacity that the
@@ -63,10 +64,78 @@ export abstract anchor FactoryPlanning:
         work as superseded, requests cancellation, and preserves its outputs for
         possible reuse. Replacement steps follow the revised plan. Superseded
         results do not automatically count toward completion.
+    estimates:
+        Agents estimate at the granularity that fits their level. Large tasks
+        use t-shirt sizes. Mid-tier briefs use story points. Cheap
+        implementation agents estimate in time. Agents also report progress,
+        remaining work, and confidence through the defined operations.
+        Estimates are advisory input, not commitments. The factory converts
+        them into displayed completion ranges using plan progress and
+        historical step durations or throughput, and reports unknown when
+        evidence is insufficient. Estimates inform reporting; they do not gate
+        dependency readiness, capacity allocation, or dispatch.
+    dependencies:
+        A dependency is a directed edge with a stable identifier, a dependent
+        step, a prerequisite step, a kind, and an optional pinned revision.
+        Edges are scoped to one order.
+        A result edge requires the prerequisite to have an assessed result
+        bound to an immutable revision; the result may still be unmerged. An
+        integrated edge requires commit ancestry in the target branch or an
+        explicit integration record. A pinned revision that is not an ancestor
+        invalidates dependents.
+        Only all-of requirements are supported. Optional and any-of
+        dependencies are rejected with a diagnostic.
+        A failed, cancelled, superseded, unresolved, or missing prerequisite
+        blocks dependents until an authorized revision repairs or removes the
+        edge.
+        Duplicate edges collapse by dependent, prerequisite, and kind.
+        Completed dependents record the prerequisite revisions consumed at
+        start and completion. Invalidation propagates transitively for result
+        edges; integrated edges invalidate when integration changes.
+        Pre-completion invalidation revalidates or supersedes. Post-completion
+        invalidation creates a successor order or incident because completed
+        orders are immutable.
+        Validation runs when a plan is proposed, when revisions merge, and when
+        persisted plans load. Per-order plan versions use compare-and-swap and
+        the merge owner serializes merges. Cycles or dangling edges pause the
+        affected subtree, roll back to the last valid plan, and escalate. An
+        invalid persisted plan pauses its order at startup.
+        Writing steps declare touched paths or resources; an undeclared writing
+        step is treated as touching the whole repository. Cross-order overlap
+        uses a durable serialization lease with owner, fencing epoch, expiry,
+        release on failure or cancellation, and restart recovery. The engineer
+        configures overlap policy.
+    overlapLeaseLifecycle:
+        Overlap keys are repo-relative paths plus declared non-path resources
+        such as ports, caches, databases, registries, and build outputs. A
+        writing step that declares no non-path resource is denied dispatch.
+        Path locking is policy-dependent because worktrees isolate paths.
+        The key set is snapshotted at acquisition; adding a key releases and
+        reacquires the full set in sorted order. Acquisition sorts keys to avoid
+        deadlock. A stale epoch cannot perform factory-owned effects: branch
+        publication, push, integration, delivery, cache or artifact publication.
+        The factory exclusively owns the ref namespace, and integration reads
+        only factory-recorded revisions.
+        A worktree belongs to the step, is materialized per session, and is
+        reused by retries. A retry after session loss starts from the step's
+        recorded revision; replacement preserves first and creates a new
+        worktree. An orphan never shares the owner's worktree.
+        Expiry fences the writer but keeps a read-only preservation claim until
+        preservation commits. Preservation copies or quarantines the tree, or
+        confirms the process stopped and freezes it, then verifies the tree hash
+        before removal. Intersecting writers wait only for preservation, not
+        engineer disposition.
     concurrentPlanRevisions:
         Treat conflicting concurrent revisions to a plan as a merge conflict.
-        The factory dispatches another agent to resolve the conflict, subject
-        to the established revision authority. The resolution must preserve a
-        coherent plan and its dependencies. The exact conflict representation
-        and handling of affected steps while resolution is pending remain
-        unspecified.
+        Identify the steps directly changed and every step whose work depends
+        on their output. Pause dispatch in that affected subtree and keep
+        unrelated work moving. Preserve both revisions and their affected
+        steps. Dispatch another authorized agent to merge them into one
+        coherent plan, subject to the established revision authority. Where
+        the changes are compatible, keep both. Where they disagree about
+        implementation, the resolving agent decides; where the disagreement is
+        about what the engineer wants, it escalates. Revalidate paused steps
+        against the merged plan, revise or supersede those that changed, resume
+        those still valid, and preserve earlier results for reuse. Dispatch
+        resumes only after the merged plan passes the normal checks. If no
+        agent with authority can resolve the conflict, it waits or escalates.

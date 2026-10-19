@@ -1,0 +1,68 @@
+export abstract anchor FactorySessions:
+    liveness:
+        Each adapter declares a discovery capability: token, launch-request
+        lookup, reference-only, or unsupported. The declaration is recorded and
+        defaults to unsupported. Token discovery injects a durable attempt token
+        at launch; matching is exact. Launch-request lookup resolves a retained
+        launch identifier and returns not-found only from that retained record,
+        never from a timeout, an empty listing, or a failed probe.
+        Reference-only relies on a durable session reference plus native status
+        or a side-effect-free attach check. Absence, a failed probe, a timeout,
+        a client disconnect, and zero token matches are unknown, not not-found
+        or ended. A direct lookup by a retained session reference that returns
+        gone or not-found is terminal evidence. Launch rejection, queue expiry,
+        and cancellation before start are launch outcomes, not session
+        evidence. A launcher-process exit is not session evidence unless the
+        adapter establishes that the launcher is the session.
+        An attempt epoch is assigned before launch from the persisted attempt
+        and launch request identifier. Each session carries its own epoch in a
+        per-source signal history. Terminal evidence applies only to its epoch,
+        so identifier reuse cannot close a newer session.
+        A session lease is committed before dispatch and claimed by exactly one
+        session identity at adoption. The adapter refuses to launch a second
+        session under a claimed lease. Every external effect checks the lease
+        epoch. Each session gets a separate worktree before it may write; an
+        orphan never shares the owner's worktree.
+        Liveness is alive, ended, or unknown, with a timestamp per signal.
+        Newer positive terminal evidence wins over older alive evidence;
+        conflicting fresh signals produce unknown. Terminal evidence does not
+        decay. A signal older than its freshness window becomes unknown, except
+        terminal evidence.
+        Heartbeat is emitted by the adapter where the harness exposes it.
+        Agent-reported heartbeat updates activity only, never liveness. Liveness
+        last-signal time and activity last-progress time are separate fields.
+        Ended requires positive evidence: native ended or terminated status,
+        process exit, or a completed stop protocol. A client disconnect is not
+        evidence. Attach probes are side-effect-free and only establish that a
+        session exists.
+        Multiple exact-token sessions make the attempt unknown, freeze each
+        session's worktree, pause dependent dispatch, and require an
+        authoritative owner. Ownership is claimed by exactly one session at
+        adoption under the session lease; other sessions become orphaned and
+        are never silently adopted. A non-owner result is preserved as evidence
+        and becomes admissible only after the owner is terminal or abandoned,
+        the owner epoch is fenced, and the result is re-based and assessed.
+        Unknown liveness preserves the session reference and blocks replacement.
+        For token and lookup variants, a resolution deadline defaults to 30
+        minutes per cause. At the deadline the attempt becomes unresolved, not
+        interrupted: it keeps a quarantine concurrency slot and its budget
+        reservation floor, its worktree is frozen, and escalation offers wait,
+        investigate, stop, or authorized replacement. With reference-only
+        discovery, a crash between launch and persistence becomes unresolved at
+        the deadline under the same rules. No retry or replacement may launch
+        while unresolved.
+        An unresolved session can be stopped through its per-session stop
+        handle by code for budget, policy, or duplicate containment, or by the
+        engineer. A confirmed stop transitions the attempt from unresolved to
+        interrupted with an audited terminal-to-terminal transition. An
+        unconfirmed stop leaves it unresolved and escalates.
+        An account-wide aggregate of unresolved exposure, measured in estimated
+        currency and usage units rather than attempt count, stops new launches
+        on that account and escalates. Other accounts and unrelated orders
+        continue.
+        Adapter errors are classified as auth, config, wiring, outage, rate
+        limit, or liveness. Auth, config, and wiring route to repair; outage and
+        non-allowance rate limits use retry policy; exhausted allowance is a
+        budget blocker; liveness is reserved for genuine indeterminacy. Process
+        exits map to completed with result, failed, or interrupted by exit
+        cause.

@@ -1,0 +1,66 @@
+export abstract anchor FactoryWiring:
+    wiringKey:
+        Wiring is keyed by operation and route or target, such as a build pool
+        or delivery destination. Each key has one active version. A version is a
+        content hash. Activation and rollback are compare-and-swap and recorded
+        in the audit. In-flight attempts and jobs pin the wiring version that
+        produced them. Drafts are inactive; retained versions remain usable only
+        while their check is valid.
+        Route names are namespaced, validated, and stored under
+        `.factory/wiring/<operation>/<route>.json`. A route cannot escape the
+        wiring directory.
+    settings:
+        A settings record declares command as an argument array or endpoint URL,
+        working directory, non-secret environment map, credential reference,
+        timeout, retry policy, and operation-specific fields. Each operation
+        declares its settings schema: required fields, types, request mapping,
+        result extraction, and capability flags.
+        Standard operation inputs map to arguments, query parameters, headers,
+        or a JSON request body according to that schema. Exit code zero or an
+        HTTP 2xx response is success; other outcomes map through the error
+        taxonomy. For a wired operation child, environment precedence is the
+        process environment, then the descriptor environment, then the record's
+        environment, with later entries overriding earlier ones. PATH comes from
+        the process environment and is rejected in descriptor and wiring
+        environments. The working directory resolves from the project root. The
+        record rejects secret-shaped environment values by key pattern, as a
+        best effort.
+    codeModules:
+        A code module declares its entry point, runtime, required configuration,
+        and contract version. It exposes validate, execute, and lookup. validate
+        returns a check result. execute returns succeeded, failed, partial, or
+        in-doubt, with a result or error class (transient, semantic, auth,
+        config, rate limit, outage, or unknown), usage, and artifacts. lookup
+        returns succeeded, failed, in-doubt, or not-found after a settle window.
+        Modules run as a subprocess over a framed JSON contract or as an
+        in-process library; the record declares which. The contract version has
+        a compatibility rule and an incompatible module is not activated.
+        A killed or timed-out execute returns in-doubt unless the adapter can
+        establish the external outcome. Partial results are preserved and are
+        not retryable unless the operation says so.
+    effectClasses:
+        Every operation declares two properties: whether a lookup exists and
+        whether replay is safe. Replay-safe means applying the same request
+        twice has no additional effect. Replay-safe maps to retry-safe;
+        replay-unsafe with lookup maps to lookup-gated; replay-unsafe without
+        lookup maps to at-most-once. A wiring capability that contradicts the
+        declared class is rejected.
+        Every retry path, including step, job, delivery, and launch, passes the
+        same gate. The effect key is stable per operation target, not per
+        attempt. Retry-safe retries confirmed terminal failures. Lookup-gated
+        retries only after lookup returns not-found from a retained record after
+        its settle window; succeeded adopts the result, failed is the outcome
+        only when lookup proves the effect did not apply, and in-doubt or a
+        failed lookup waits or escalates. At-most-once retries only failures
+        known to occur before the effect applied, such as admission, pre-launch,
+        or launch refusal; post-launch uncertainty escalates. Partial results
+        never authorize a retry beyond the class. In-doubt discovery and
+        partial-result preservation override any retry permission.
+    secrets:
+        Secrets are references resolved by a broker with a permission manifest,
+        lease scope, and TTL. Modules receive least privilege and scoped
+        disclosure, not raw credentials. An expired lease blocks new calls; a
+        live call keeps its lease until completion. Credential revocation
+        invalidates the check and routes to credential replacement, not wiring
+        repair. Wiring files are excluded from evidence capture and diffs.
+        Logs and artifacts written by modules pass through the redaction policy.

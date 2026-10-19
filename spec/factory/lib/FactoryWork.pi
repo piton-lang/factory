@@ -1,0 +1,11 @@
+from ./FactoryDelivery import FactoryDelivery
+from ./FactoryHarnesses import FactoryHarnesses
+from ./FactoryIntegration import FactoryIntegration
+from ./FactoryLifecycle import FactoryLifecycle
+from ./FactoryOperations import FactoryOperations
+from ./FactoryOrchestration import FactoryOrchestration
+from ./FactoryPlanning import FactoryPlanning
+from ./FactoryQuestions import FactoryQuestions
+
+export abstract anchor FactoryWork extends FactoryOrchestration, FactoryPlanning, FactoryDelivery, FactoryIntegration, FactoryOperations, FactoryHarnesses, FactoryLifecycle, FactoryQuestions:
+    pass

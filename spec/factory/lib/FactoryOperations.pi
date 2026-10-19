@@ -1,0 +1,92 @@
+export abstract anchor FactoryOperations:
+    semanticVocabulary:
+        Agents change factory state only through defined semantic operations,
+        not raw record updates. Ordinary code validates authority, dependency
+        rules, and idempotency. The required vocabulary covers order and plan
+        changes, execution reporting, engineer input, evidence, liveness, and
+        progress.
+    operationEnvelope:
+        Every operation request carries a request identifier, operation name,
+        actor, target, payload, and the expected order aggregate version for a
+        mutation of an existing order. Creating an order aggregate presents an
+        absence or uniqueness precondition instead. Creating or changing a
+        record inside an existing order still presents the aggregate version
+        plus any record-level precondition. Step and attempt versions and answer
+        generations are payload preconditions. Factory-internal shared-state
+        operations use their own record versions under the single writer lock.
+        Every response carries a status, a result or error, and the current
+        aggregate version. A conflict returns the current version and applies
+        nothing. Idempotency replay precedes version comparison; the expected
+        version is part of the canonical fingerprint; a corrected retry uses a
+        new request identifier. Reads never conflict and report a committed
+        snapshot and its time. Cross-order effects decompose into per-order
+        operations with a correlation identifier and recorded per-order
+        outcomes; a partial decomposition reports the committed and failed
+        orders for recovery. Retries reuse the request identifier and return
+        the original result. The transport is a project choice, recorded in the
+        descriptor.
+    actorClasses:
+        Actors are the engineer, factory code, agents, and auditors. Factory
+        code is trusted for internal controls. The engineer may act across the
+        factory. An agent may act on its assigned step and the work beneath it;
+        cross order or higher-tier actions follow revision authority.
+        Auditors are read-only and perform no operation; their reads follow
+        FactoryObservability.readAccess. Every operation is checked against
+        these classes and the matrix in FactorySecurity.authorizationMatrix.
+        Authentication stays project-specific.
+    coreRecords:
+        The canonical core records are order, step, attempt, result, question,
+        assumption, and session. Cancellation requests, authorized scope
+        records, jobs, leases, reservations, queue entries, dependency edges,
+        artifacts, delivery receipts, and successor links are supporting records
+        whose required fields are defined by the sections that govern them.
+        An order carries its identifier, source prompt or specification
+        reference, state, phase, priority, delivery intent, and timestamps. A
+        step carries its identifier, order, objective and brief, expected output
+        and completion criteria, dependency identifiers, state, required flag,
+        assigned agent or model, worktree and branch when it writes files,
+        attempt count, estimate, and result reference. An attempt carries its
+        identifier, step, number, parent attempt or null, launch request
+        identifier, session references, state, start and end times, end cause,
+        class, retry-counted flag, effect key, evidence, and worktree when it
+        writes files.
+        A result carries its identifier, step and attempt, outcome, summary,
+        evidence and artifact references, checks run, completion assessment, and
+        the question generations and assumption records it relies on. A
+        question carries its identifier, related order or step, asker, context,
+        state, decision key, generation, answer, and blocking scope. An
+        assumption carries its statement, provenance, scope, owner, state, and
+        timestamps. A session carries its identifier, harness, external session
+        reference, step attempt, discovery variant or token when applicable,
+        epoch and per-source signal history, liveness state and last signal
+        time, and last activity time.
+        Every record carries a version for optimistic concurrency and
+        timestamps. Fields defined as required by the governing section are
+        required; conditional fields are null until they apply. Implementations
+        may add more.
+    orderAndPlan:
+        - submit an order
+        - revise an order's scope, priority, or delivery intent
+        - add or revise a step
+        - declare or remove a dependency
+        - supersede a step after an authorized revision
+        - propose a plan revision, including conflict resolution
+    executionReporting:
+        - report a step outcome as done, failed, or blocked
+        - request help from a higher tier
+        - escalate a question to the engineer
+        - record a build or check result
+        - attach evidence or artifacts to a step or order
+    lifecycleAndAccounting:
+        - request cancellation within the project's authority rules
+        - send a heartbeat when the harness or integration supports one
+        - report progress and an estimated completion time
+    notAgentOperations:
+        Dispatching and claiming work, allocating resources and accounts, and
+        starting, shutting down, or importing work remain factory or engineer
+        operations. Agents do not own the general orchestration loop.
+    unresolvedOperationDetails:
+        Cancellation authority, the effect of cancellation on a running harness
+        session, and how progress estimates and completion times are produced,
+        represented, and trusted remain open. Implementations must not present
+        an estimate as a guarantee.

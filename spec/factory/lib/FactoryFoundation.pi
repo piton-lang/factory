@@ -1,0 +1,14 @@
+from ./FactoryAdoption import FactoryAdoption
+from ./FactoryAuthoring import FactoryAuthoring
+from ./FactoryBackground import FactoryBackground
+from ./FactoryConformance import FactoryConformance
+from ./FactoryDescriptor import FactoryDescriptor
+from ./FactoryEvolution import FactoryEvolution
+from ./FactoryObservability import FactoryObservability
+from ./FactoryOnboarding import FactoryOnboarding
+from ./FactorySecurity import FactorySecurity
+from ./FactoryTooling import FactoryTooling
+from ./FactoryVerification import FactoryVerification
+
+export abstract anchor FactoryFoundation extends FactoryAdoption, FactoryEvolution, FactoryObservability, FactoryOnboarding, FactorySecurity, FactoryBackground, FactoryTooling, FactoryDescriptor, FactoryConformance, FactoryVerification, FactoryAuthoring:
+    pass

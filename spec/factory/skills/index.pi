@@ -1,5 +1,7 @@
 from ./Factory0010FocusOn export *
 from ./Factory0010Onboard export *
 from ./Factory0010Optimize export *
+from ./Factory0010Scaffold export *
 from ./Factory0010Shutdown export *
 from ./Factory0010Start export *
+from ./Factory0010Verify export *

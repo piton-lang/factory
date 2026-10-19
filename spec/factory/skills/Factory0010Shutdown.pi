@@ -8,19 +8,23 @@ export skill Factory0010Shutdown extends FactorySkillBase:
     prompt:
         Follow @{Factory.gracefulShutdown} and @{Factory.restartRecovery}.
         Discover the actual factory shutdown operations and current services,
-        sessions, builds, and pending work. Stop dispatching new steps, allow
-        running steps to finish, and preserve pending work for the next start.
-        Keep infrastructure needed by running steps available until they finish.
+        sessions, builds, and pending work. Stop dispatching new steps, wait the
+        configured grace period for running steps, then preserve unfinished
+        steps and pending questions as resumable. Keep infrastructure needed by
+        running steps available during the grace period. Report finished,
+        interrupted, still-running, and awaiting-input work separately, and
+        offer the engineer the option to wait longer.
 
         Use deterministic controls for shutdown, not ad hoc edits to state or
         broad process kills. Verify that dispatch is stopped and persist plans,
         briefs, status, results, worktree references, and harness session
         references needed for recovery. Preserve completion assessment handoffs.
 
-        If running work hangs or awaits engineer input, explain the remaining
-        blocker and obtain a decision rather than invent a timeout or silently
-        terminate it. Respect an explicit engineer instruction for a different
-        shutdown scope. Report incomplete shutdown honestly.
+        After the grace period, preserve hanging or awaiting-input work as
+        resumable rather than terminating it silently. If an engineer is
+        present, explain the remaining blocker and offer to wait longer. Respect
+        an explicit engineer instruction for a different shutdown scope. Report
+        incomplete shutdown honestly.
     result:
         Report whether dispatch and services stopped, work still running,
         preserved pending work, recovery references, and unresolved blockers.

@@ -6,13 +6,67 @@ export abstract anchor FactoryRecovery:
         repeated. If an agent is still working in its harness after a factory
         restart, reconnect to that session and let it continue rather than
         launching a replacement. Preserve the session references needed for
-        this recovery so surviving work is not duplicated.
-    failedAttempts:
-        The factory allows limited automatic retries for temporary execution
-        failures, such as timeouts. Retry limits are configurable. Problems with
-        the work itself become help requests through the defined escalation
-        path. Temporary execution failures that exhaust automatic retries also
-        enter the defined escalation path.
+        this recovery so surviving work is not duplicated. Launch, discovery,
+        and uncertain liveness follow FactorySessions.liveness.
+    recoveryInventory:
+        Startup acquires the writer lock and reconciles in this order: store and
+        audit integrity; configuration digest and retained snapshots; plans and
+        worktree ownership; binding of effect intents and idempotency claims;
+        target delivery classification under the old epoch; sessions; attempts;
+        jobs; deliveries and receipts; retry and breaker state; reservations,
+        unresolved exposure, queue, and capacity.
+        Claims are bound and quarantined before evidence, then disposed after
+        the session, target, or job evidence that determines their outcome. No
+        launch, build, delivery, worktree, or retry is admitted until all stages
+        complete and the claim is disposed. Scopes are global, account, route,
+        target, order, and plan subtree; an order-local failure pauses only that
+        order.
+    unresolvedRecovery:
+        Unresolved attempts keep their effect key. Positive terminal session
+        evidence or a confirmed stop transitions unresolved to interrupted. An
+        engineer confirming no effect transitions it to failed. An authorized
+        replacement transitions it to orphaned and creates a new attempt; the
+        old attempt stays terminal and its lease and effect key are transferred
+        explicitly.
+        A live session found after restart while unresolved is not resumed
+        automatically. The engineer chooses stop, replacement, or acceptance of
+        the result after re-based assessment. In-flight deliveries are
+        classified under the old epoch before re-fencing; applied adopts or
+        reconstructs the receipt under that epoch, not-applied releases, and
+        unknown holds the claim. Only free or expired leases are re-fenced. A
+        late holder is recorded as orphaned, and non-git adapters report whether
+        the effect landed.
+    retryRecovery:
+        Retry state is an explicit record per attempt chain with a stable timer
+        identifier, effect key, chain generation, policy generation, counted
+        attempts, remaining allowance, wall-clock absolute deadline, delay
+        source, and non-counting reasons. Breaker state records account,
+        harness, route, the failure-event window, cooldown, a single half-open
+        probe lease, and its policy generation.
+        Fire-once consumption, retry-record advance, attempt intent, idempotency
+        claim, and admission reservation commit atomically. The fire-once key
+        includes effect key, chain generation, and retry ordinal. Restart
+        resumes the wall-clock deadline; downtime past it fires once during
+        reconciliation through the full admission gate. Breaker reconciliation
+        is account and route scoped, preserves the window, and permits exactly
+        one probe.
+    recoveryMatrix:
+        Recovery conformance uses crash points derived from the durability
+        order: before claim, after claim before intent, after intent before
+        launch acknowledgement, after effect before outcome commit, after
+        read-back before receipt commit, during adoption, during compensation,
+        after outcome commit before acknowledgement, and during reconciliation
+        itself. Cells cover live-session restart, unresolved restart,
+        in-doubt delivery, expired lease with a stale holder attempting an
+        effect, restart during backoff, duplicate timer fire, and duplicate
+        request after restart.
+        Each cell states the expected persisted state, launch and adapter
+        invocation counts cross-checked against intents and receipts, expected
+        configuration digest, and a path-reached assertion. A negative control
+        disables fencing and must detect a duplicate and fail. Forcing lookup to
+        unknown is not a failure control because unknown must hold the claim and
+        produce no further effect. Quiescence advances past persisted deadlines.
+        A cell that never reaches its fault is not passed.
     unlikelyResolution:
         When further autonomous attempts no longer look likely to resolve a
         problem, obtain engineer input rather than continuing unsuccessful
@@ -21,5 +75,9 @@ export abstract anchor FactoryRecovery:
         not establish a fixed attempt count or time limit for substantive
         problem resolution.
     gracefulShutdown:
-        On graceful shutdown, the factory stops starting new steps, lets running
-        steps finish, and saves pending work for the next start.
+        On graceful shutdown, the factory stops starting new steps, waits a
+        configurable grace period for running steps to finish, then preserves
+        unfinished steps and pending questions as resumable and exits. The
+        report distinguishes finished, interrupted, still-running, and
+        awaiting-input work. The engineer may choose to wait longer when
+        prompted. Shutdown never discards preserved work.
